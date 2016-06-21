@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Drawing.Drawing2D;
 
 namespace TestProject
 {
@@ -15,15 +16,14 @@ namespace TestProject
         public class Shape
         {
             private ProcessInfoGraphic _owner;
+            private short _id;
             private string _text;
-            private Bitmap _bmp;
-            private Point _location = Point.Empty;
             private int _width;
             private int _height;
-            private Rectangle _clientRectangle;
+            private Point _location;
             private Point _origin;
-
-            public short Id;
+            private Bitmap _bmp;
+            private Rectangle _clientRectangle;
 
             public string Text
             {
@@ -43,69 +43,71 @@ namespace TestProject
             public Point Location
             {
                 get { return _location; }
-                set
-                {
-                    _location = value;
-                    SetClientRectangle();
-                }
+                set { _location = value; Prepare(); }
             }
 
             public int Width
             {
                 get { return _width; }
-                set
-                {
-                    _width = value;
-                    SetClientRectangle();
-                }
+                set { _width = value; Prepare(); }
             }
 
             public int Height
             {
                 get { return _height; }
-                set
-                {
-                    _height = value;
-                    SetClientRectangle();
-                }
+                set { _height = value; Prepare(); }    
             }
 
             public Rectangle ClientRectangle { get { return _clientRectangle; } }
+            public Point Origin { get { return _origin; } }
 
-            public Shape(ProcessInfoGraphic owner)
+            public Shape(ProcessInfoGraphic owner, Point location, int width, int height)
             {
                 _owner = owner;
-                SetClientRectangle();
+                _location = location;
+                _width = width;
+                _height = height;
+                Prepare();
             }
 
-            private void SetClientRectangle()
+            private void Prepare()
             {
                 _clientRectangle = new Rectangle(_location, new Size(_width, _height));
+                _origin = new Point(_location.X + _width / 2, _location.Y + _height / 2);
             }
         }
 
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)] // designer ekranı yazıldığında vs designerı için gerekecek
-        public List<Shape> Shapes { get; } = new List<Shape>();
-
-        [Browsable(false)]
-        public List<KeyValuePair<Shape, Shape>> ShapeRelation { get; } = new List<KeyValuePair<Shape, Shape>>();
-
-        [Browsable(false)]
-        public List<KeyValuePair<Shape, Shape>> ShapePath { get; } = new List<KeyValuePair<Shape, Shape>>();
-
-        public void RotateAllToShape(Shape referenceShape, float angle)
+        public class Relation
         {
-            if (Shapes.FindIndex(ob => ob == referenceShape) == -1)
+            public Shape FromShape;
+            public Shape ToShape;
+            public DashStyle LineDashSytle;
+            public bool IsActive;
+        }
+
+        //[Browsable(false)]
+        //[DesignerSerializationVisibility(DesignerSerializationVisibility.Content)] // designer ekranı yazıldığında vs designerı için gerekecek
+        //public List<Shape> Shapes { get; } = new List<Shape>();
+
+        private List<Shape> _shapes = new List<Shape>();
+        private List<Relation> _shapeRelation = new List<Relation>();
+        private List<Relation> _shapePath = new List<Relation>();
+
+        public void RotateToShape(Shape referenceShape, float angle)
+        {
+            if (_shapes.FindIndex(ob => ob == referenceShape) == -1)
             {
                 MessageBox.Show("Nesne bulunamadı!");
                 return;
             }
 
-            foreach (Shape ob in Shapes)
+            foreach (Shape ob in _shapes)
             {
-                ob.Location = GraphicHelper.RotatePoint(ob.Location, referenceShape.Location, angle);
+                Point rotatedOrijin = GraphicHelper.RotatePoint(ob.Origin, referenceShape.Origin, angle);
+                ob.Location = new Point(rotatedOrijin.X - ob.Width / 2, rotatedOrijin.Y - ob.Height / 2);
             }
+
+            Invalidate();
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -117,9 +119,9 @@ namespace TestProject
             rect.Height = rect.Height - 1;
             e.Graphics.DrawRectangle(Pens.Red, rect);
 
-            if (Shapes.Count == 0) return;
+            if (_shapes.Count == 0) return;
 
-            foreach (Shape ob in Shapes)
+            foreach (Shape ob in _shapes)
             {
                 e.Graphics.DrawRectangle(Pens.Blue, ob.ClientRectangle);
             }
