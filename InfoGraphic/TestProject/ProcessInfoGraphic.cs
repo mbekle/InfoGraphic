@@ -16,7 +16,6 @@ namespace TestProject
         public class Shape
         {
             private ProcessInfoGraphic _owner;
-            private short _id;
             private string _text;
             private int _width;
             private int _height;
@@ -89,9 +88,82 @@ namespace TestProject
         //[DesignerSerializationVisibility(DesignerSerializationVisibility.Content)] // designer ekranı yazıldığında vs designerı için gerekecek
         //public List<Shape> Shapes { get; } = new List<Shape>();
 
+        public enum ShapeAlignmentStyle { None, Left, Right, Top, Bottom, Center }
+
+        private bool _isInInitializing = false;
         private List<Shape> _shapes = new List<Shape>();
         private List<Relation> _shapeRelation = new List<Relation>();
         private List<Relation> _shapePath = new List<Relation>();
+        private ShapeAlignmentStyle _shapeAlignment = ShapeAlignmentStyle.None;
+        private Point _leftMostShapeLocation;
+
+        public ShapeAlignmentStyle ShapeAlignment
+        {
+            get { return _shapeAlignment; }
+            set
+            {
+                _shapeAlignment = value;
+                AlignShapes(_shapeAlignment);
+                Invalidate();
+            }
+        }
+
+        public void BeginInitalize()
+        {
+            _isInInitializing = true;
+        }
+
+        public void EndInitialize()
+        {
+            _isInInitializing = false;
+            _leftMostShapeLocation = GetLeftMostShapeLocation();
+            Invalidate();
+        }
+
+        private Point GetLeftMostShapeLocation()
+        {
+            if (_shapes.Count == 0) return Point.Empty;
+
+            Point minLocation = _shapes[0].Location;
+
+            foreach (Shape ob in _shapes)
+            {
+                if (ob.Location.X < minLocation.X)
+                {
+                    minLocation = ob.Location;
+                }
+            }
+
+            return minLocation;
+        }
+
+        private bool ControlInInitialize()
+        {
+            if (_isInInitializing == false)
+            {
+                MessageBox.Show("Call BeginInitialize method first, later call EndInitialize method!");
+                return false;
+            }
+
+            return true;
+        }
+
+        public Shape AddShape(string text, int width, int height, Point location)
+        {
+            if (ControlInInitialize() == false) return null;
+
+            Shape shape = new Shape(this, location, width, height);
+            _shapes.Add(shape);
+            return shape;
+        }
+
+        public void AddShape(Shape[] shapeArray)
+        {
+            if (ControlInInitialize() == false) return;
+
+            _shapes.Clear();
+            _shapes.AddRange(shapeArray);
+        }
 
         public void RotateToShape(Shape referenceShape, float angle)
         {
@@ -107,7 +179,47 @@ namespace TestProject
                 ob.Location = new Point(rotatedOrijin.X - ob.Width / 2, rotatedOrijin.Y - ob.Height / 2);
             }
 
+            _leftMostShapeLocation = GetLeftMostShapeLocation();
+
             Invalidate();
+        }
+
+        private void AlignShapes(ShapeAlignmentStyle alignment)
+        {
+            if (_shapes.Count == 0) return;
+
+            Point tmpLocation = _shapes[0].Location;
+
+            foreach (Shape ob in _shapes)
+            {
+                bool exc = false;
+
+                switch (alignment)
+                {
+                    case ShapeAlignmentStyle.Left:
+                        if (ob.Location.X < tmpLocation.X) exc = true;
+                        break;
+
+                    case ShapeAlignmentStyle.Right:
+                        if (ob.Location.X > tmpLocation.X) exc = true;
+                        break;
+
+                    case ShapeAlignmentStyle.Top:
+                        if (ob.Location.Y < tmpLocation.Y) exc = true;
+                        break;
+
+                    case ShapeAlignmentStyle.Bottom:
+                        if (ob.Location.Y > tmpLocation.Y) exc = true;
+                        break;
+                }
+
+                if (exc)
+                {
+                    tmpLocation = ob.Location;
+                }
+
+            }
+
         }
 
         protected override void OnPaint(PaintEventArgs e)
