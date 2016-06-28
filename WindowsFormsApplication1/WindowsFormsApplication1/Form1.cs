@@ -17,12 +17,20 @@ namespace WindowsFormsApplication1
         GraphicsPath path2 = new GraphicsPath();
         PointF org1;
         PointF org2;
-        RectangleF rect1 = new RectangleF(200, 10, 100, 100);
-        RectangleF rect2 = new RectangleF(20, 150, 70, 70);
-        
+        //RectangleF rect1 = new RectangleF(200, 10, 100, 100);
+        //RectangleF rect2 = new RectangleF(20, 150, 70, 70);
+
+        RectangleF rect1 = new RectangleF(158, 64, 100, 100);
+        RectangleF rect2 = new RectangleF(183, 283, 70, 70);
+
+
         public Form1()
         {
             InitializeComponent();
+
+            //DoubleBuffered = true;
+            //SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+
 
             DoubleBuffered = true;
             SetStyle(ControlStyles.SupportsTransparentBackColor |
@@ -74,7 +82,7 @@ namespace WindowsFormsApplication1
             //    if (nearestPoint1Found == false)
             //    {
             //        nearestPoint1 = new PointF(org1.X + i * sign, org1.Y + (float)Math.Tan(angleRad) * i * sign);
-                    
+
             //        if (path1.IsVisible(nearestPoint1) == false)
             //        {
             //            nearestPoint1Found = true;
@@ -109,35 +117,35 @@ namespace WindowsFormsApplication1
 
 
 
-                /*
-                Graphics g = this.CreateGraphics();
+            /*
+            Graphics g = this.CreateGraphics();
 
-                PointF p1 = new PointF(20, 100);
-                PointF p2 = new PointF(100, 80);
+            PointF p1 = new PointF(20, 100);
+            PointF p2 = new PointF(100, 80);
 
-                g.DrawLine(Pens.Blue, p1, p2);
-
-
-                ////
-                float a = p2.Y - p1.Y;
-                float b = p2.X - p1.X;
-                float angleRad = (float)Math.Atan(a / b);
+            g.DrawLine(Pens.Blue, p1, p2);
 
 
-                List<PointF> points = new List<PointF>();
-
-                for (float i = 1f; i < b; ++i)
-                {
-                    points.Add(new PointF(p1.X + i, p1.Y + (float)Math.Tan(angleRad) * i));
-                }
-
-                g.DrawLines(Pens.Red, points.ToArray());
-                ///
-                */
+            ////
+            float a = p2.Y - p1.Y;
+            float b = p2.X - p1.X;
+            float angleRad = (float)Math.Atan(a / b);
 
 
+            List<PointF> points = new List<PointF>();
 
-                //g.Dispose();
+            for (float i = 1f; i < b; ++i)
+            {
+                points.Add(new PointF(p1.X + i, p1.Y + (float)Math.Tan(angleRad) * i));
+            }
+
+            g.DrawLines(Pens.Red, points.ToArray());
+            ///
+            */
+
+
+
+            //g.Dispose();
 
 
 
@@ -239,17 +247,30 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
             float opposite = orgPoint2.Y - orgPoint1.Y;
             float adjacent = orgPoint2.X - orgPoint1.X;
             float angleRad = (float)Math.Atan(opposite / adjacent);
-            float sign = (adjacent < 0 ? -1 : 1);
-            
+
+            float sign;
+            float limit;
+            bool isAdjacent = (Math.Abs(adjacent) > Math.Abs(opposite));
+            if (isAdjacent)
+            {
+                limit = Math.Abs(adjacent);
+                sign = (adjacent < 0 ? -1 : 1);
+            }
+            else
+            {
+                limit = Math.Abs(opposite);
+                sign = (opposite < 0 ? -1 : 1);
+            }
+
             nearestPoint1 = orgPoint1;
             nearestPoint2 = orgPoint2;
-            adjacent = Math.Abs(adjacent);
 
-            for (float i = 1; i < adjacent; ++i)
+            for (float i = 1; i < limit; ++i)
             {
                 if (nearestPoint1Found == false)
                 {
-                    nearestPoint1 = new PointF(orgPoint1.X + i * sign, orgPoint1.Y + (float)Math.Tan(angleRad) * i * sign);
+                    nearestPoint1 = isAdjacent ? new PointF(orgPoint1.X + i * sign, orgPoint1.Y + (float)Math.Tan(angleRad) * i * sign)
+                                               : new PointF(orgPoint1.X + (i / (float)Math.Tan(angleRad)) * sign, orgPoint1.Y + i * sign);
 
                     if (path1.IsVisible(nearestPoint1) == false)
                     {
@@ -259,7 +280,8 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
 
                 if (nearestPoint2Found == false)
                 {
-                    nearestPoint2 = new PointF(orgPoint2.X - i * sign, orgPoint2.Y - (float)Math.Tan(angleRad) * i * sign);
+                    nearestPoint2 = isAdjacent ? new PointF(orgPoint2.X - i * sign, orgPoint2.Y - (float)Math.Tan(angleRad) * i * sign)
+                                               : new PointF(orgPoint2.X - (i / (float)Math.Tan(angleRad)) * sign, orgPoint2.Y - i * sign);
 
                     if (path2.IsVisible(nearestPoint2) == false)
                     {
@@ -274,13 +296,24 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+            e.Graphics.SmoothingMode = SmoothingMode.HighQuality;// AntiAlias;
+            e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            e.Graphics.Clear(Color.LightGray);
+
             e.Graphics.DrawPath(Pens.Black, path1);
             e.Graphics.DrawPath(Pens.Black, path2);
 
             PointF nearestPoint1;
             PointF nearestPoint2;
             GetNearestPoints(org1, org2, out nearestPoint1, out nearestPoint2);
-            e.Graphics.DrawLine(Pens.Gray, nearestPoint1, nearestPoint2);
+
+            Pen pen = new Pen(Color.Orange, 1);
+            pen.StartCap = LineCap.NoAnchor;
+            pen.EndCap = LineCap.ArrowAnchor;
+            pen.CustomEndCap = new AdjustableArrowCap(5, 7);
+            //pen.DashStyle = DashStyle.Dash;
+            //pen.DashCap = DashCap.Triangle;
+            e.Graphics.DrawLine(pen, nearestPoint1, nearestPoint2);
         }
 
         private void button1_MouseDown(object sender, MouseEventArgs e)
