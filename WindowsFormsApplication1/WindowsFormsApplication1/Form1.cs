@@ -16,29 +16,44 @@ namespace WindowsFormsApplication1
         GraphicsPath path1 = new GraphicsPath();
         GraphicsPath path2 = new GraphicsPath();
         PointF org1;
-        PointF org2 ;
+        PointF org2;
+        RectangleF rect1 = new RectangleF(200, 10, 100, 100);
+        RectangleF rect2 = new RectangleF(20, 150, 70, 70);
         
         public Form1()
         {
             InitializeComponent();
-            InitializePaths(new PointF(200, 10), new PointF(20, 150));
+
+            DoubleBuffered = true;
+            SetStyle(ControlStyles.SupportsTransparentBackColor |
+                     ControlStyles.DoubleBuffer |
+                     ControlStyles.AllPaintingInWmPaint |
+                     ControlStyles.UserPaint, true);
+
+
+            InitializePath(path1, 0, 0);
+            InitializePath(path2, 0, 0);
         }
 
-        private void InitializePaths(PointF location1, PointF location2)
+        private void InitializePath(GraphicsPath path, float deltaX, float deltaY)
         {
-            RectangleF rect1 = new RectangleF(location1.X, location1.Y, 100, 100);
-            org1 = new PointF(rect1.Left + rect1.Width / 2, rect1.Top + rect1.Height / 2);
-            path1.Reset();
-            path1.AddRectangle(rect1);
-            path1.CloseFigure();
+            path.Reset();
 
-            RectangleF rect2 = new RectangleF(location2.X, location2.Y, 70, 70);
-            org2 = new PointF(rect2.Left + rect2.Width / 2, rect2.Top + rect2.Height / 2);
-            path2.Reset();
-            path2.AddEllipse(rect2);
-            path2.CloseFigure();
+            if (path == path1)
+            {
+                rect1.Offset(deltaX, deltaY);
+                org1 = new PointF(rect1.Left + rect1.Width / 2, rect1.Top + rect1.Height / 2);
+                path1.AddRectangle(rect1);
+            }
+            else
+            {
+                rect2.Offset(deltaX, deltaY);
+                org2 = new PointF(rect2.Left + rect2.Width / 2, rect2.Top + rect2.Height / 2);
+                path2.AddEllipse(rect2);
+            }
+
+            path.CloseFigure();
         }
-
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -141,6 +156,17 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
 
         private bool path1In = false;
         private bool path2In = false;
+        private int mouseDX;
+        private int mouseDY;
+
+        private void Form1_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left && (path1In || path2In))
+            {
+                mouseDX = e.X;
+                mouseDY = e.Y;
+            }
+        }
 
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
@@ -152,6 +178,15 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
 
                     using (Graphics g = CreateGraphics())
                         g.DrawPath(Pens.Red, path1);
+                }
+
+                if (e.Button == MouseButtons.Left)
+                {
+                    InitializePath(path1, e.X - mouseDX, e.Y - mouseDY);
+                    mouseDX = e.X;
+                    mouseDY = e.Y;
+                    textBox1.Text = "org1 --> " + org1.ToString() + "     rect1 --> " + rect1.ToString();
+                    this.Invalidate();
                 }
             }
             else
@@ -165,6 +200,7 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
                 }
             }
 
+            // path2
             if (path2.IsVisible(e.Location))
             {
                 if (path2In == false)
@@ -173,6 +209,15 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
 
                     using (Graphics g = CreateGraphics())
                         g.DrawPath(Pens.Red, path2);
+                }
+
+                if (e.Button == MouseButtons.Left)
+                {
+                    InitializePath(path2, e.X - mouseDX, e.Y - mouseDY);
+                    mouseDX = e.X;
+                    mouseDY = e.Y;
+                    textBox2.Text = "org2 --> " + org2.ToString() + "     rect2 --> " + rect2.ToString();
+                    this.Invalidate();
                 }
             }
             else
@@ -185,23 +230,6 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
                         g.DrawPath(Pens.Black, path2);
                 }
             }
-
-            if (e.Button == MouseButtons.Left && path1In)
-            {
-                //InitializePaths(new PointF())
-
-                //e.X - mouseDX
-
-                Text = "mouseDX " + (e.X - mouseDX).ToString();
-                mouseDX = e.X;
-            }
-            else
-            {
-                Text = "";
-            }
-
-            //Text = path1.IsVisible(e.Location).ToString();
-            //Text = path2.IsVisible(e.Location).ToString();
         }
 
         private void GetNearestPoints(PointF orgPoint1, PointF orgPoint2, out PointF nearestPoint1, out PointF nearestPoint2)
@@ -255,15 +283,22 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
             e.Graphics.DrawLine(Pens.Gray, nearestPoint1, nearestPoint2);
         }
 
-        private int mouseDX;
-        private int mouseDY;
-
-        private void Form1_MouseDown(object sender, MouseEventArgs e)
+        private void button1_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && path1In)
+            if (e.Button == MouseButtons.Left)
             {
                 mouseDX = e.X;
                 mouseDY = e.Y;
+            }
+
+        }
+
+        private void button1_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                button1.Left = button1.Left + (e.X - mouseDX);
+                button1.Top = button1.Top + (e.Y - mouseDY);
             }
         }
     }
