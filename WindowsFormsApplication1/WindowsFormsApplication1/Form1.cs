@@ -184,8 +184,8 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
                 {
                     path1In = true;
 
-                    using (Graphics g = CreateGraphics())
-                        g.DrawPath(Pens.Red, path1);
+                    //using (Graphics g = CreateGraphics())
+                    //    g.DrawPath(Pens.Red, path1);
                 }
 
                 if (e.Button == MouseButtons.Left)
@@ -203,8 +203,8 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
                 {
                     path1In = false;
 
-                    using (Graphics g = CreateGraphics())
-                        g.DrawPath(Pens.Black, path1);
+                    //using (Graphics g = CreateGraphics())
+                    //    g.DrawPath(Pens.Black, path1);
                 }
             }
 
@@ -215,8 +215,8 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
                 {
                     path2In = true;
 
-                    using (Graphics g = CreateGraphics())
-                        g.DrawPath(Pens.Red, path2);
+                    //using (Graphics g = CreateGraphics())
+                    //    g.DrawPath(Pens.Red, path2);
                 }
 
                 if (e.Button == MouseButtons.Left)
@@ -234,8 +234,8 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
                 {
                     path2In = false;
 
-                    using (Graphics g = CreateGraphics())
-                        g.DrawPath(Pens.Black, path2);
+                    //using (Graphics g = CreateGraphics())
+                    //    g.DrawPath(Pens.Black, path2);
                 }
             }
         }
@@ -294,6 +294,273 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
             }
         }
 
+        public enum IGArrowCapStyle
+        {
+            None,
+            Rectangle,
+            RoundedRectangle,
+            Ellipse,
+            Arrow,
+            Diamond
+        }
+
+        public class IGArrowProp
+        {
+            public PointF StartPoint;
+            public PointF EndPoint;
+            public IGArrowCapStyle StartCap;
+            public IGArrowCapStyle EndCap;
+
+            public float Lenght;
+            public float Width;
+            public float BackPuffyLenght;
+            public Color Color;
+            public Color OutlineColor;
+            public DashStyle OutlineDash;
+            public float OutlineWidth;
+        }
+
+        public class IGLineProp
+        {
+            public Color Color;
+            public DashStyle Dash = DashStyle.Solid;
+            public float Width = 1;
+        }
+
+        private GraphicsPath CalculateArrowPath
+        (
+            IGArrowCapStyle arrowCap,
+            PointF arrowPoint,
+            PointF otherPoint,
+            float length,
+            float width,
+            float backPuffyLenght)
+        {
+            if (arrowCap == IGArrowCapStyle.None)
+                return null;
+
+            float tmpW;
+            GraphicsPath arrowPath = new GraphicsPath();
+
+            switch (arrowCap)
+            {
+                case IGArrowCapStyle.Arrow :
+                    double lineAngleRad = Math.Atan2(arrowPoint.Y - otherPoint.Y, arrowPoint.X - otherPoint.X);
+                    double pointY = arrowPoint.Y - Math.Sin(lineAngleRad) * (length + backPuffyLenght);
+                    double pointX = arrowPoint.X - Math.Cos(lineAngleRad) * (length + backPuffyLenght);
+
+                    PointF arrowpPointFront = arrowPoint;
+                    PointF arrowpPointBack = new PointF((float)pointX, (float)pointY);
+
+                    double arrowCapAngleRad = Math.Atan2(width, length);
+                    double tmpRad = Math.PI - arrowCapAngleRad + lineAngleRad;
+                    double capLength = Math.Sqrt(Math.Pow(length, 2) + Math.Pow(width, 2));
+                    pointY = arrowPoint.Y + Math.Sin(tmpRad) * capLength;
+                    pointX = arrowPoint.X + Math.Cos(tmpRad) * capLength;
+                    PointF arrowpPointLeft = new PointF((float)pointX, (float)pointY);
+
+                    tmpRad = Math.PI + arrowCapAngleRad + lineAngleRad;
+                    pointY = arrowPoint.Y + Math.Sin(tmpRad) * capLength;
+                    pointX = arrowPoint.X + Math.Cos(tmpRad) * capLength;
+                    PointF arrowpPointRight = new PointF((float)pointX, (float)pointY);
+
+                    arrowPath.AddPolygon(new PointF[] { arrowpPointFront, arrowpPointLeft, arrowpPointBack, arrowpPointRight });
+
+                    break;
+
+                case IGArrowCapStyle.Ellipse:
+                    arrowPath.AddEllipse(arrowPoint.X - (width / 2), arrowPoint.Y - (width / 2), width, width);
+                    break;
+
+                case IGArrowCapStyle.Rectangle:
+                    arrowPath.AddRectangle(new RectangleF(arrowPoint.X - (width / 2), arrowPoint.Y - (width / 2), width, width));
+                    break;
+
+                case IGArrowCapStyle.RoundedRectangle:
+                    tmpW = width / 1.5f;
+                    float radius = width / 2;
+                    arrowPath.AddArc(arrowPoint.X + tmpW - radius, arrowPoint.Y - tmpW, radius, radius, -90, 90);
+                    arrowPath.AddArc(arrowPoint.X + tmpW - radius, arrowPoint.Y + tmpW - radius, radius, radius, 0, 90);
+                    arrowPath.AddArc(arrowPoint.X - tmpW, arrowPoint.Y + tmpW - radius, radius, radius, 90, 90);
+                    arrowPath.AddArc(arrowPoint.X - tmpW, arrowPoint.Y - tmpW, radius, radius, 180, 90);
+                    break;
+
+                case IGArrowCapStyle.Diamond:
+                    tmpW = width / 1.5f;
+                    arrowPath.AddPolygon(new PointF[]
+                    {
+                        new PointF(arrowPoint.X, arrowPoint.Y - tmpW),
+                        new PointF(arrowPoint.X + tmpW, arrowPoint.Y),
+                        new PointF(arrowPoint.X, arrowPoint.Y + tmpW),
+                        new PointF(arrowPoint.X - tmpW, arrowPoint.Y)
+                    });
+                    break;
+            }
+
+            arrowPath.CloseFigure();
+            return arrowPath;
+        }
+
+        private void DrawArrow(Graphics gr, IGArrowProp prop)
+        {
+            GraphicsPath startPath = CalculateArrowPath
+                (
+                    prop.StartCap,
+                    prop.StartPoint,
+                    prop.EndPoint,
+                    prop.Lenght,
+                    prop.Width,
+                    prop.BackPuffyLenght
+                );
+            GraphicsPath endPath = CalculateArrowPath
+                (
+                    prop.EndCap,
+                    prop.EndPoint,
+                    prop.StartPoint,
+                    prop.Lenght,
+                    prop.Width,
+                    prop.BackPuffyLenght
+                );
+
+            gr.DrawLine(Pens.Blue, prop.StartPoint, prop.EndPoint);
+
+            if (startPath != null)
+            {
+                gr.FillPath(Brushes.White, startPath);
+                gr.DrawPath(Pens.Green, startPath);
+                startPath.Dispose();
+            }
+
+            if (endPath != null)
+            {
+                gr.FillPath(Brushes.Blue, endPath);
+                gr.DrawPath(Pens.Navy, endPath);
+                endPath.Dispose();
+            }
+
+            //g.FillEllipse(Brushes.Green, arrowpPointBack.X - 2.5f, arrowpPointBack.Y - 2.5f, 5, 5);
+            //g.FillEllipse(Brushes.Yellow, arrowpPointFront.X - 2.5f, arrowpPointFront.Y - 2.5f, 5, 5);
+
+        }
+
+        private void DrawArrow(Graphics g, PointF ArrowStart, PointF ArrowEnd, Color ArrowColor, int LineWidth, int ArrowMultiplier)
+        {
+            //create the pen
+            Pen p = new Pen(ArrowColor, LineWidth);
+
+            //draw the line
+            g.DrawLine(p, ArrowStart, ArrowEnd);
+
+            //determine the coords for the arrow point
+
+            //tip of the arrow
+            PointF arrowPoint = ArrowEnd;
+
+            //determine arrow length
+            double arrowLength = Math.Sqrt(Math.Pow(Math.Abs(ArrowStart.X - ArrowEnd.X), 2) +
+                                           Math.Pow(Math.Abs(ArrowStart.Y - ArrowEnd.Y), 2));
+
+            //determine arrow angle
+            double arrowAngle = Math.Atan2(Math.Abs(ArrowStart.Y - ArrowEnd.Y), Math.Abs(ArrowStart.X - ArrowEnd.X));
+
+            //get the x,y of the back of the point
+
+            //to change from an arrow to a diamond, change the 3
+            //in the next if/else blocks to 6
+
+            double pointX, pointY;
+            if (ArrowStart.X > ArrowEnd.X)
+            {
+                pointX = ArrowStart.X - (Math.Cos(arrowAngle) * (arrowLength - (3 * ArrowMultiplier)));
+            }
+            else
+            {
+                pointX = Math.Cos(arrowAngle) * (arrowLength - (3 * ArrowMultiplier)) + ArrowStart.X;
+            }
+
+            if (ArrowStart.Y > ArrowEnd.Y)
+            {
+                pointY = ArrowStart.Y - (Math.Sin(arrowAngle) * (arrowLength - (3 * ArrowMultiplier)));
+            }
+            else
+            {
+                pointY = (Math.Sin(arrowAngle) * (arrowLength - (3 * ArrowMultiplier))) + ArrowStart.Y;
+            }
+
+            PointF arrowPointBack = new PointF((float)pointX, (float)pointY);
+
+            //get the secondary angle of the left tip
+            double angleB = Math.Atan2((3 * ArrowMultiplier), (arrowLength - (3 * ArrowMultiplier)));
+
+            double angleC = Math.PI * (90 - (arrowAngle * (180 / Math.PI)) - (angleB * (180 / Math.PI))) / 180;
+
+            //get the secondary length
+            double secondaryLength = (3 * ArrowMultiplier) / Math.Sin(angleB);
+
+            if (ArrowStart.X > ArrowEnd.X)
+            {
+                pointX = ArrowStart.X - (Math.Sin(angleC) * secondaryLength);
+            }
+            else
+            {
+                pointX = (Math.Sin(angleC) * secondaryLength) + ArrowStart.X;
+            }
+
+            if (ArrowStart.Y > ArrowEnd.Y)
+            {
+                pointY = ArrowStart.Y - (Math.Cos(angleC) * secondaryLength);
+            }
+            else
+            {
+                pointY = (Math.Cos(angleC) * secondaryLength) + ArrowStart.Y;
+            }
+
+            //get the left point
+            PointF arrowPointLeft = new PointF((float)pointX, (float)pointY);
+
+            //move to the right point
+            angleC = arrowAngle - angleB;
+
+            if (ArrowStart.X > ArrowEnd.X)
+            {
+                pointX = ArrowStart.X - (Math.Cos(angleC) * secondaryLength);
+            }
+            else
+            {
+                pointX = (Math.Cos(angleC) * secondaryLength) + ArrowStart.X;
+            }
+
+            if (ArrowStart.Y > ArrowEnd.Y)
+            {
+                pointY = ArrowStart.Y - (Math.Sin(angleC) * secondaryLength);
+            }
+            else
+            {
+                pointY = (Math.Sin(angleC) * secondaryLength) + ArrowStart.Y;
+            }
+
+            PointF arrowPointRight = new PointF((float)pointX, (float)pointY);
+
+            //create the point list
+            PointF[] arrowPoints = new PointF[4];
+            arrowPoints[0] = arrowPoint;
+            arrowPoints[1] = arrowPointLeft;
+            arrowPoints[2] = arrowPointBack;
+            arrowPoints[3] = arrowPointRight;
+
+            //draw the outline
+            g.DrawPolygon(p, arrowPoints);
+
+            //fill the polygon
+            g.FillPolygon(new SolidBrush(ArrowColor), arrowPoints);
+
+            //for (int i = 0; i < arrowPoints.Length; ++i)
+            //g.FillEllipse(Brushes.Red, arrowPoints[i].X - 2.5f, arrowPoints[i].Y - 2.5f, 5, 5);
+
+            //g.FillEllipse(Brushes.Red, arrowPoints[1].X - 2.5f, arrowPoints[1].Y - 2.5f, 5, 5);
+
+        }
+
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.SmoothingMode = SmoothingMode.HighQuality;// AntiAlias;
@@ -307,13 +574,45 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
             PointF nearestPoint2;
             GetNearestPoints(org1, org2, out nearestPoint1, out nearestPoint2);
 
-            Pen pen = new Pen(Color.Orange, 1);
-            pen.StartCap = LineCap.NoAnchor;
-            pen.EndCap = LineCap.ArrowAnchor;
-            pen.CustomEndCap = new AdjustableArrowCap(5, 7);
-            //pen.DashStyle = DashStyle.Dash;
-            //pen.DashCap = DashCap.Triangle;
-            e.Graphics.DrawLine(pen, nearestPoint1, nearestPoint2);
+            IGArrowProp prop = new IGArrowProp()
+            {
+                StartPoint = nearestPoint1,
+                EndPoint = nearestPoint2,
+                StartCap = IGArrowCapStyle.RoundedRectangle,
+                EndCap = IGArrowCapStyle.Arrow,
+                Lenght = 20,
+                Width = 10,
+                BackPuffyLenght = -3,
+                Color = Color.Blue,
+                OutlineColor = Color.Red,
+                OutlineDash = DashStyle.Solid,
+                OutlineWidth = 1
+            };
+
+            DrawArrow(e.Graphics, prop);
+
+
+            //Pen pen = new Pen(Color.DarkOrange, 1);
+            //pen.StartCap = LineCap.NoAnchor;
+            //pen.EndCap = LineCap.ArrowAnchor;
+            //pen.CustomEndCap = new AdjustableArrowCap(15, 20);
+            ////pen.DashStyle = DashStyle.Dash;
+            ////pen.DashCap = DashCap.Triangle;
+            //g.DrawLine(pen, nearestPoint1, nearestPoint2);
+        }
+
+
+        public static PointF RotatePoint(PointF pointToRotate, PointF referencePoint, double angleInRadian)
+        {
+            //double angleInRadian = angleInDegree * (Math.PI / 180.0);
+            double cosTheta = Math.Cos(angleInRadian);
+            double sinTheta = Math.Sin(angleInRadian);
+
+            return new PointF
+            {
+                X = (int)(cosTheta * (pointToRotate.X - referencePoint.X) - sinTheta * (pointToRotate.Y - referencePoint.Y) + referencePoint.X),
+                Y = (int)(sinTheta * (pointToRotate.X - referencePoint.X) + cosTheta * (pointToRotate.Y - referencePoint.Y) + referencePoint.Y)
+            };
         }
 
         private void button1_MouseDown(object sender, MouseEventArgs e)
