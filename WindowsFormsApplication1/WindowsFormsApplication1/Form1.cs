@@ -304,6 +304,13 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
             Diamond
         }
 
+        public class IGLineProp
+        {
+            public Color Color;
+            public DashStyle Dash;
+            public float Width;
+        }
+
         public class IGArrowProp
         {
             public PointF StartPoint;
@@ -314,17 +321,13 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
             public float Lenght;
             public float Width;
             public float BackPuffyLenght;
-            public Color Color;
+            public Color FromColor;
+            public Color ToColor = Color.Empty;
             public Color OutlineColor;
             public DashStyle OutlineDash;
             public float OutlineWidth;
-        }
 
-        public class IGLineProp
-        {
-            public Color Color;
-            public DashStyle Dash = DashStyle.Solid;
-            public float Width = 1;
+            public IGLineProp LineProp;
         }
 
         private GraphicsPath CalculateArrowPath
@@ -401,6 +404,28 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
             return arrowPath;
         }
 
+        private void PaintPath(Graphics gr, GraphicsPath path, IGArrowProp prop)
+        {
+            Pen pen = new Pen(prop.OutlineColor);
+            pen.DashStyle = prop.OutlineDash;
+            pen.Width = prop.OutlineWidth;
+
+            Brush brush;
+            if (prop.ToColor == Color.Empty)
+            {
+                brush = new SolidBrush(prop.FromColor);
+            }
+            else
+            {
+                brush = new LinearGradientBrush(path.GetBounds(), prop.FromColor, prop.ToColor, LinearGradientMode.ForwardDiagonal);
+            }
+
+            gr.FillPath(brush, path);
+            gr.DrawPath(pen, path);
+            pen.Dispose();
+            brush.Dispose();
+        }
+
         private void DrawArrow(Graphics gr, IGArrowProp prop)
         {
             GraphicsPath startPath = CalculateArrowPath
@@ -422,25 +447,27 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
                     prop.BackPuffyLenght
                 );
 
-            gr.DrawLine(Pens.Blue, prop.StartPoint, prop.EndPoint);
+            Pen pen = new Pen(prop.LineProp.Color);
+            pen.DashStyle = prop.LineProp.Dash;
+            pen.Width = prop.LineProp.Width;
+
+            gr.DrawLine(pen, prop.StartPoint, prop.EndPoint);
+            pen.Dispose();
 
             if (startPath != null)
             {
-                gr.FillPath(Brushes.White, startPath);
-                gr.DrawPath(Pens.Green, startPath);
+                PaintPath(gr, startPath, prop);
                 startPath.Dispose();
             }
 
             if (endPath != null)
             {
-                gr.FillPath(Brushes.Blue, endPath);
-                gr.DrawPath(Pens.Navy, endPath);
+                PaintPath(gr, endPath, prop);
                 endPath.Dispose();
             }
 
             //g.FillEllipse(Brushes.Green, arrowpPointBack.X - 2.5f, arrowpPointBack.Y - 2.5f, 5, 5);
             //g.FillEllipse(Brushes.Yellow, arrowpPointFront.X - 2.5f, arrowpPointFront.Y - 2.5f, 5, 5);
-
         }
 
         private void DrawArrow(Graphics g, PointF ArrowStart, PointF ArrowEnd, Color ArrowColor, int LineWidth, int ArrowMultiplier)
@@ -583,22 +610,16 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
                 Lenght = 20,
                 Width = 10,
                 BackPuffyLenght = -3,
-                Color = Color.Blue,
+                FromColor = Color.Blue,
+                ToColor = Color.White,
                 OutlineColor = Color.Red,
                 OutlineDash = DashStyle.Solid,
-                OutlineWidth = 1
+                OutlineWidth = 1,
+
+                LineProp = new IGLineProp() { Color = Color.Green, Dash = DashStyle.DashDot, Width = 2 }
             };
 
             DrawArrow(e.Graphics, prop);
-
-
-            //Pen pen = new Pen(Color.DarkOrange, 1);
-            //pen.StartCap = LineCap.NoAnchor;
-            //pen.EndCap = LineCap.ArrowAnchor;
-            //pen.CustomEndCap = new AdjustableArrowCap(15, 20);
-            ////pen.DashStyle = DashStyle.Dash;
-            ////pen.DashCap = DashCap.Triangle;
-            //g.DrawLine(pen, nearestPoint1, nearestPoint2);
         }
 
 
