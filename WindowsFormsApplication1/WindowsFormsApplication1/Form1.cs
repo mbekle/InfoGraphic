@@ -65,6 +65,7 @@ namespace WindowsFormsApplication1
 
         private void button1_Click(object sender, EventArgs e)
         {
+            
             //float opposite = org2.Y - org1.Y;
             //float adjacent = org2.X - org1.X;
             //float angleRad = (float)Math.Atan(opposite / adjacent);
@@ -309,6 +310,7 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
             public Color Color;
             public DashStyle Dash;
             public float Width;
+            public bool IsBezier;
         }
 
         public class IGArrowProp
@@ -451,7 +453,71 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
             pen.DashStyle = prop.LineProp.Dash;
             pen.Width = prop.LineProp.Width;
 
-            gr.DrawLine(pen, prop.StartPoint, prop.EndPoint);
+            if (prop.LineProp.IsBezier)
+            {
+                double dx = prop.EndPoint.X - prop.StartPoint.X;
+                double dy = prop.EndPoint.Y - prop.StartPoint.Y;
+                double angleRad = Math.Atan2(dy, dx);
+                double hipSeq = Math.Sqrt(Math.Pow(Math.Abs(dx), 2) + Math.Pow(Math.Abs(dy), 2)) / 6;
+
+                PointF[] bezierPoints = new PointF[]
+                    {
+                        prop.StartPoint,
+                        new PointF( (float)(prop.EndPoint.X - Math.Cos(angleRad) * (5 * hipSeq)),
+                                     (float)(prop.EndPoint.Y - Math.Sin(angleRad) * (5 * hipSeq)) - 15),
+
+                        new PointF( (float)(prop.EndPoint.X - Math.Cos(angleRad) * (4 * hipSeq)),
+                                     (float)(prop.EndPoint.Y - Math.Sin(angleRad) * (4 * hipSeq)) - 15),
+
+                        new PointF( (float)(prop.EndPoint.X - Math.Cos(angleRad) * (3 * hipSeq)),
+                                     (float)(prop.EndPoint.Y - Math.Sin(angleRad) * (3 * hipSeq)) - 15),
+
+                        new PointF( (float)(prop.EndPoint.X - Math.Cos(angleRad) * (2 * hipSeq)),
+                                     (float)(prop.EndPoint.Y - Math.Sin(angleRad) * (2 * hipSeq)) - 15),
+
+                        new PointF( (float)(prop.EndPoint.X - Math.Cos(angleRad) * hipSeq),
+                                     (float)(prop.EndPoint.Y - Math.Sin(angleRad) * hipSeq)),
+                        prop.EndPoint
+                    };
+
+                gr.DrawBeziers(pen, bezierPoints);
+                //gr.DrawCurve(pen, bezierPoints);
+
+                foreach (PointF p in bezierPoints)
+                    gr.FillEllipse(Brushes.Green, p.X - 2.5f, p.Y - 2.5f, 5, 5);
+            }
+            else
+            {
+                double dx = prop.EndPoint.X - prop.StartPoint.X;
+                double dy = prop.EndPoint.Y - prop.StartPoint.Y;
+                double angleRad = Math.Atan2(dy, dx);
+                double hipSeq = Math.Sqrt(Math.Pow(Math.Abs(dx), 2) + Math.Pow(Math.Abs(dy), 2)) / 6;
+                double delta = 15;
+
+                double angleRad2;
+                double len;
+
+                PointF[] points = new PointF[7];
+                for (int i = 1; i < 6; ++i)
+                {
+                    angleRad2 = angleRad - Math.Atan2(delta, i * hipSeq) + 2 * Math.PI;
+                    len = Math.Sqrt(Math.Pow(i * hipSeq, 2) + Math.Pow(delta, 2));
+
+                    points[i] = new PointF(
+                                            (float)(prop.StartPoint.X + len * Math.Cos(angleRad2)),
+                                            (float)(prop.StartPoint.Y + len * Math.Sin(angleRad2))
+                                          );
+                }
+                points[0] = prop.StartPoint;
+                points[6] = prop.EndPoint;
+
+                gr.DrawLine(pen, prop.StartPoint, prop.EndPoint);
+                //gr.DrawBeziers(pen, points);
+                //gr.DrawCurve(pen, new PointF[] { prop.StartPoint, prop.EndPoint });
+
+                foreach (PointF p in points)
+                    gr.FillEllipse(Brushes.Red, p.X - 2.5f, p.Y - 2.5f, 5, 5);
+            }
             pen.Dispose();
 
             if (startPath != null)
@@ -590,10 +656,12 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+            
             e.Graphics.SmoothingMode = SmoothingMode.HighQuality;// AntiAlias;
             e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
             e.Graphics.Clear(Color.LightGray);
 
+            
             e.Graphics.DrawPath(Pens.Black, path1);
             e.Graphics.DrawPath(Pens.Black, path2);
 
@@ -616,10 +684,18 @@ y3 = r * y2 + (1 - r) * y1 #into the ratio (1-r):r
                 OutlineDash = DashStyle.Solid,
                 OutlineWidth = 1,
 
-                LineProp = new IGLineProp() { Color = Color.Green, Dash = DashStyle.DashDot, Width = 2 }
+                LineProp = new IGLineProp() { Color = Color.Green, Dash = DashStyle.Solid, Width = 2, IsBezier = false }
             };
 
             DrawArrow(e.Graphics, prop);
+            
+
+
+            //PointF[] points = new PointF[] { new PointF(100, 100), new PointF(150, 90), new PointF(200, 90), new PointF(250, 100)  };
+            //e.Graphics.DrawBeziers(Pens.Red, points);
+
+            //foreach(PointF p in points)
+            //    e.Graphics.FillEllipse(Brushes.Green, p.X - 2.5f, p.Y - 2.5f, 5, 5);
         }
 
 
