@@ -73,7 +73,7 @@ namespace TestProject
                 }    
             }
 
-            public Font TextFont { get; set; } = new Font("Tahoma", 8f);
+            public Font TextFont { get; set; }
 
             public Rectangle ClientRectangle { get { return _clientRectangle; } }
             public Point Origin { get { return _origin; } }
@@ -95,6 +95,8 @@ namespace TestProject
                 _location = location;
                 _width = width;
                 _height = height;
+
+                TextFont = new Font("Tahoma", 8f);
 
                 Prepare();
             }
@@ -147,9 +149,9 @@ namespace TestProject
                     gradientBrush = new LinearGradientBrush(_clientRectangle, Color.FromArgb(224, 237, 248), Color.Gray, LinearGradientMode.ForwardDiagonal);
                 }
 
-                //Rectangle tmpRect = _clientRectangle;
-                //tmpRect.Inflate(-3, -3);
-                //gr.FillEllipse(gradientBrush, tmpRect);
+                Rectangle tmpRect = _clientRectangle;
+                tmpRect.Inflate(-3, -3);
+                gr.FillEllipse(gradientBrush, tmpRect);
 
                 StringFormat sf = new StringFormat();
                 sf.LineAlignment = StringAlignment.Center;

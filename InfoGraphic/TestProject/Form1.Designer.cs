@@ -36,9 +36,10 @@
             // 
             // RotateButton
             // 
-            this.RotateButton.Location = new System.Drawing.Point(26, 754);
+            this.RotateButton.Location = new System.Drawing.Point(17, 490);
+            this.RotateButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.RotateButton.Name = "RotateButton";
-            this.RotateButton.Size = new System.Drawing.Size(102, 44);
+            this.RotateButton.Size = new System.Drawing.Size(68, 29);
             this.RotateButton.TabIndex = 1;
             this.RotateButton.Text = "Rotate";
             this.RotateButton.UseVisualStyleBackColor = true;
@@ -46,9 +47,10 @@
             // 
             // CenterShapesButton
             // 
-            this.CenterShapesButton.Location = new System.Drawing.Point(26, 804);
+            this.CenterShapesButton.Location = new System.Drawing.Point(17, 523);
+            this.CenterShapesButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.CenterShapesButton.Name = "CenterShapesButton";
-            this.CenterShapesButton.Size = new System.Drawing.Size(102, 52);
+            this.CenterShapesButton.Size = new System.Drawing.Size(68, 34);
             this.CenterShapesButton.TabIndex = 2;
             this.CenterShapesButton.Tag = "0";
             this.CenterShapesButton.Text = "Center Shapes";
@@ -57,9 +59,10 @@
             // 
             // VerticalButton
             // 
-            this.VerticalButton.Location = new System.Drawing.Point(134, 804);
+            this.VerticalButton.Location = new System.Drawing.Point(89, 523);
+            this.VerticalButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.VerticalButton.Name = "VerticalButton";
-            this.VerticalButton.Size = new System.Drawing.Size(102, 52);
+            this.VerticalButton.Size = new System.Drawing.Size(68, 34);
             this.VerticalButton.TabIndex = 2;
             this.VerticalButton.Tag = "0";
             this.VerticalButton.Text = "Vertical";
@@ -71,20 +74,22 @@
             this.processInfoGraphic1.Dock = System.Windows.Forms.DockStyle.Top;
             this.processInfoGraphic1.IsVertical = false;
             this.processInfoGraphic1.Location = new System.Drawing.Point(0, 0);
+            this.processInfoGraphic1.Margin = new System.Windows.Forms.Padding(2);
             this.processInfoGraphic1.Name = "processInfoGraphic1";
-            this.processInfoGraphic1.Size = new System.Drawing.Size(1031, 702);
+            this.processInfoGraphic1.Size = new System.Drawing.Size(687, 220);
             this.processInfoGraphic1.TabIndex = 0;
             this.processInfoGraphic1.Resize += new System.EventHandler(this.processInfoGraphic1_Resize);
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1031, 905);
+            this.ClientSize = new System.Drawing.Size(687, 568);
             this.Controls.Add(this.VerticalButton);
             this.Controls.Add(this.CenterShapesButton);
             this.Controls.Add(this.RotateButton);
             this.Controls.Add(this.processInfoGraphic1);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";

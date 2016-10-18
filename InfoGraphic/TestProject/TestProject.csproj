@@ -53,6 +53,12 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="GraphicHelper.cs" />
+    <Compile Include="IGProcess.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IGProcess.Designer.cs">
+      <DependentUpon>IGProcess.cs</DependentUpon>
+    </Compile>
     <Compile Include="ProcessInfoGraphic.cs">
       <SubType>UserControl</SubType>
     </Compile>
