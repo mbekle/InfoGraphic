@@ -25,6 +25,17 @@ namespace TestProject
             hazine = processInfoGraphic1.AddItem("hazine", 50, 50, new Point(120, 15));
             tahm1 = processInfoGraphic1.AddItem("tahm1", 60, 60, new Point(220, 50));
             //processInfoGraphic1.EndInitialize();
+
+
+
+            Font font = new Font("Tahoma", 8f);
+            Color fromColor = Color.FromArgb(224, 237, 248);
+            Color toColor = Color.FromArgb(94, 158, 219);
+            igProcess1.AddItem("Dosya Hazırlık", 0, font, fromColor, toColor);
+            igProcess1.AddItem("Dosya Kabul", 0, font, fromColor, toColor);
+            igProcess1.AddItem("Analiz", 0, font, fromColor, toColor);
+            igProcess1.AddItem("İstihbarat", 0, font, fromColor, toColor);
+            igProcess1.PrepareItems();
         }
 
         private void RotateButton_Click(object sender, EventArgs e)

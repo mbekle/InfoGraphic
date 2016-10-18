@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
 
@@ -17,7 +12,6 @@ namespace TestProject
         private const int DefaultItemHeight = 30;
         private const int ItemTextLeftOrRightEmptyWidth = 15;
         private const int ItemSeperatorWidth = 5;
-        private const int ItemBeginOrEndEmptyWidth = 10;
 
         public class IGProcessItem
         {
@@ -26,8 +20,11 @@ namespace TestProject
             public Font TextFont { get; set; }
             public Rectangle BoundedRect { get; set; }
             public Point Origin { get; set; }
+            public GraphicsPath GrPath { get; set; }
+            public Color BackColorFrom { get; set; }
+            public Color BackColorTo { get; set; }
 
-            public IGProcessItem(string text, int width, Font font)
+            public IGProcessItem(string text, int width, Font font, Color backColorFrom, Color backColorTo)
             {
                 Text = text;
                 TextFont = font;
@@ -47,47 +44,44 @@ namespace TestProject
                         Width = TextRenderer.MeasureText(text, font).Width + (ItemTextLeftOrRightEmptyWidth * 2);
                     }
                 }
-            }
 
-            public void Draw(Graphics gr)
-            {
-                //LinearGradientBrush gradientBrush;
-
-                //if (isActive)
-                //{
-                //    gr.FillPath(new SolidBrush(Color.FromArgb(245, 124, 45)), _shapePath);
-                //    gradientBrush = new LinearGradientBrush(_clientRectangle, Color.FromArgb(224, 237, 248), Color.FromArgb(94, 158, 219), LinearGradientMode.ForwardDiagonal);
-                //}
-                //else
-                //{
-                //    gr.FillEllipse(new SolidBrush(Color.DarkGray), _clientRectangle);
-                //    gradientBrush = new LinearGradientBrush(_clientRectangle, Color.FromArgb(224, 237, 248), Color.Gray, LinearGradientMode.ForwardDiagonal);
-                //}
-
-                //Rectangle tmpRect = _clientRectangle;
-                //tmpRect.Inflate(-3, -3);
-                //gr.FillEllipse(gradientBrush, tmpRect);
-
-                //StringFormat sf = new StringFormat();
-                //sf.LineAlignment = StringAlignment.Center;
-                //sf.Alignment = StringAlignment.Center;
-                //gr.DrawString(_text, TextFont, new SolidBrush(Color.Black), _clientRectangle, sf);
+                BackColorFrom = (backColorFrom == Color.Empty ? Color.Blue : backColorFrom);
+                BackColorTo = backColorTo;
             }
         }
 
         private List<IGProcessItem> _items = new List<IGProcessItem>();
-        public int ItemHeight { get; set; }
+        private int _itemHeight;
+        private bool _isInitializing = false;
+        public int ItemHeight
+        {
+            get { return _itemHeight; }
+            set
+            {
+                _itemHeight = value;
+                PrepareItems();
+                Invalidate();
+            }
+        }
 
         public IGProcess()
         {
-            ItemHeight = DefaultItemHeight;
+            _itemHeight = DefaultItemHeight;
 
-            InitializeComponent();
+            _isInitializing = true;
+            try
+            {
+                InitializeComponent();
+            }
+            finally
+            {
+                _isInitializing = false;
+            }
         }
 
-        public IGProcessItem AddItem(string text, int width, Font font)
+        public IGProcessItem AddItem(string text, int width, Font font, Color backColorFrom, Color backColorTo)
         {
-            IGProcessItem item = new IGProcessItem(text, width, font);
+            IGProcessItem item = new IGProcessItem(text, width, font, backColorFrom, backColorTo);
             _items.Add(item);
             return item;
         }
@@ -98,31 +92,75 @@ namespace TestProject
             _items.AddRange(itemArray);
         }
 
-        public void InitializeItems()
+        public void PrepareItems()
         {
-            if (_items.Count == 0)
+            if (_items.Count == 0 || _isInitializing)
             {
                 return;
             }
 
-            int itemsWidht = _items.Sum(ob => ob.Width);
-            itemsWidht += ((_items.Count - 1) * ItemSeperatorWidth) + (2 * ItemBeginOrEndEmptyWidth);
-            int start
+            int itemsTotalWidht = _items.Sum(ob => ob.Width);
+            itemsTotalWidht += ((_items.Count - 1) * ItemSeperatorWidth);
+
+            Point location = new Point((Width - itemsTotalWidht) / 2, (Height - ItemHeight) / 2);
 
             for (int i = 0; i < _items.Count; ++i)
             {
                 IGProcessItem pItem = _items[i];
+                pItem.BoundedRect = new Rectangle(location, new Size(pItem.Width, ItemHeight));
+                pItem.Origin = new Point(pItem.BoundedRect.X + pItem.BoundedRect.Width / 2, pItem.BoundedRect.Y + pItem.BoundedRect.Height / 2);
 
-                pItem.BoundedRect = new Rectangle()
+                if (pItem.GrPath != null)
+                {
+                    pItem.GrPath.Dispose();
+                }
+                pItem.GrPath = new GraphicsPath();
+                pItem.GrPath.AddRectangle(pItem.BoundedRect);
+
+                location.X = location.X + pItem.Width + ItemSeperatorWidth;
+            }
+        }
+
+        public void DrawProcessItem(Graphics gr, IGProcessItem item)
+        {
+            Brush brush;
+
+            if (item.BackColorTo == Color.Empty)
+            {
+                brush = new SolidBrush(item.BackColorFrom);
+            }
+            else
+            {
+                brush = new LinearGradientBrush(item.BoundedRect, item.BackColorFrom, item.BackColorTo, LinearGradientMode.Horizontal);
             }
 
+            gr.FillPath(brush, item.GrPath);
 
-                foreach (IGProcessItem ob in _items)
-                {
-                    //ob.BoundedRect = 
 
-                    //e.Graphics.DrawRectangle(Pens.Blue, ob.ClientRectangle);
-                }
+            //LinearGradientBrush gradientBrush;
+
+            //if (isActive)
+            //{
+            //    gr.FillPath(new SolidBrush(Color.FromArgb(245, 124, 45)), _shapePath);
+            //    gradientBrush = new LinearGradientBrush(_clientRectangle, Color.FromArgb(224, 237, 248), Color.FromArgb(94, 158, 219), LinearGradientMode.ForwardDiagonal);
+            //}
+            //else
+            //{
+            //    gr.FillEllipse(new SolidBrush(Color.DarkGray), _clientRectangle);
+            //    gradientBrush = new LinearGradientBrush(_clientRectangle, Color.FromArgb(224, 237, 248), Color.Gray, LinearGradientMode.ForwardDiagonal);
+            //}
+
+            //Rectangle tmpRect = _clientRectangle;
+            //tmpRect.Inflate(-3, -3);
+            //gr.FillEllipse(gradientBrush, tmpRect);
+
+            //StringFormat sf = new StringFormat();
+            //sf.LineAlignment = StringAlignment.Center;
+            //sf.Alignment = StringAlignment.Center;
+            //gr.DrawString(_text, TextFont, new SolidBrush(Color.Black), _clientRectangle, sf);
+
+            //gr.FillRectangle(Brushes.Blue, BoundedRect);
+
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -138,11 +176,9 @@ namespace TestProject
             e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
             e.Graphics.Clear(Color.LightGray);
 
-            foreach (IGProcessItem ob in _items)
+            foreach (IGProcessItem item in _items)
             {
-                ob.Draw(e.Graphics);
-
-                //e.Graphics.DrawRectangle(Pens.Blue, ob.ClientRectangle);
+                DrawProcessItem(e.Graphics, item);
             }
 
 
