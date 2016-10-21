@@ -50,9 +50,18 @@ namespace TestProject
             }
         }
 
+        public enum FirstLastItemShapeType
+        {
+            Rectangle,
+            RoundedRectangle,
+            Round
+        }
+
         private List<IGProcessItem> _items = new List<IGProcessItem>();
-        private int _itemHeight;
+        private int _itemHeight = DefaultItemHeight;
         private bool _isInitializing = false;
+        private FirstLastItemShapeType _firstLastItemShapeType = FirstLastItemShapeType.Round;
+        
         public int ItemHeight
         {
             get { return _itemHeight; }
@@ -66,8 +75,6 @@ namespace TestProject
 
         public IGProcess()
         {
-            _itemHeight = DefaultItemHeight;
-
             _isInitializing = true;
             try
             {

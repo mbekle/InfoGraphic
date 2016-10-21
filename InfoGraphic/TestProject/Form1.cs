@@ -34,7 +34,7 @@ namespace TestProject
             igProcess1.AddItem("Dosya Hazırlık", 0, font, fromColor, toColor);
             igProcess1.AddItem("Dosya Kabul", 0, font, fromColor, toColor);
             igProcess1.AddItem("Analiz", 0, font, fromColor, toColor);
-            igProcess1.AddItem("İstihbarat", 0, font, fromColor, toColor);
+            igProcess1.AddItem("İstihbarat", 0, font, fromColor, Color.Empty);
             igProcess1.PrepareItems();
         }
 
