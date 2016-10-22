@@ -37,10 +37,9 @@
             // 
             // RotateButton
             // 
-            this.RotateButton.Location = new System.Drawing.Point(17, 490);
-            this.RotateButton.Margin = new System.Windows.Forms.Padding(2);
+            this.RotateButton.Location = new System.Drawing.Point(26, 754);
             this.RotateButton.Name = "RotateButton";
-            this.RotateButton.Size = new System.Drawing.Size(68, 29);
+            this.RotateButton.Size = new System.Drawing.Size(102, 45);
             this.RotateButton.TabIndex = 1;
             this.RotateButton.Text = "Rotate";
             this.RotateButton.UseVisualStyleBackColor = true;
@@ -48,10 +47,9 @@
             // 
             // CenterShapesButton
             // 
-            this.CenterShapesButton.Location = new System.Drawing.Point(17, 523);
-            this.CenterShapesButton.Margin = new System.Windows.Forms.Padding(2);
+            this.CenterShapesButton.Location = new System.Drawing.Point(26, 805);
             this.CenterShapesButton.Name = "CenterShapesButton";
-            this.CenterShapesButton.Size = new System.Drawing.Size(68, 34);
+            this.CenterShapesButton.Size = new System.Drawing.Size(102, 52);
             this.CenterShapesButton.TabIndex = 2;
             this.CenterShapesButton.Tag = "0";
             this.CenterShapesButton.Text = "Center Shapes";
@@ -60,10 +58,9 @@
             // 
             // VerticalButton
             // 
-            this.VerticalButton.Location = new System.Drawing.Point(89, 523);
-            this.VerticalButton.Margin = new System.Windows.Forms.Padding(2);
+            this.VerticalButton.Location = new System.Drawing.Point(134, 805);
             this.VerticalButton.Name = "VerticalButton";
-            this.VerticalButton.Size = new System.Drawing.Size(68, 34);
+            this.VerticalButton.Size = new System.Drawing.Size(102, 52);
             this.VerticalButton.TabIndex = 2;
             this.VerticalButton.Tag = "0";
             this.VerticalButton.Text = "Vertical";
@@ -72,12 +69,19 @@
             // 
             // igProcess1
             // 
-            this.igProcess1.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.igProcess1.ItemHeight = 30;
-            this.igProcess1.Location = new System.Drawing.Point(41, 35);
-            this.igProcess1.Margin = new System.Windows.Forms.Padding(2);
+            this.igProcess1.BackColor = System.Drawing.Color.AntiqueWhite;
+            this.igProcess1.BackColorGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.igProcess1.BackColorTo = System.Drawing.Color.Empty;
+            this.igProcess1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.igProcess1.ItemAlignment = System.Drawing.StringAlignment.Center;
+            this.igProcess1.ItemHeight = ((short)(35));
+            this.igProcess1.ItemRoundingShape = TestProject.ItemRoundingShapeType.Circular;
+            this.igProcess1.ItemRoundWidth = ((short)(15));
+            this.igProcess1.ItemSeperatorWidth = ((short)(-17));
+            this.igProcess1.ItemTriangleWidth = ((short)(20));
+            this.igProcess1.Location = new System.Drawing.Point(0, 0);
             this.igProcess1.Name = "igProcess1";
-            this.igProcess1.Size = new System.Drawing.Size(452, 63);
+            this.igProcess1.Size = new System.Drawing.Size(1024, 98);
             this.igProcess1.TabIndex = 3;
             // 
             // processInfoGraphic1
@@ -85,25 +89,23 @@
             this.processInfoGraphic1.BackColor = System.Drawing.SystemColors.ControlDark;
             this.processInfoGraphic1.ForeColor = System.Drawing.Color.Coral;
             this.processInfoGraphic1.IsVertical = false;
-            this.processInfoGraphic1.Location = new System.Drawing.Point(269, 424);
-            this.processInfoGraphic1.Margin = new System.Windows.Forms.Padding(2);
+            this.processInfoGraphic1.Location = new System.Drawing.Point(358, 601);
             this.processInfoGraphic1.Name = "processInfoGraphic1";
-            this.processInfoGraphic1.Size = new System.Drawing.Size(335, 127);
+            this.processInfoGraphic1.Size = new System.Drawing.Size(581, 222);
             this.processInfoGraphic1.TabIndex = 0;
             this.processInfoGraphic1.Visible = false;
             this.processInfoGraphic1.Resize += new System.EventHandler(this.processInfoGraphic1_Resize);
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(687, 568);
+            this.ClientSize = new System.Drawing.Size(1024, 874);
             this.Controls.Add(this.igProcess1);
             this.Controls.Add(this.VerticalButton);
             this.Controls.Add(this.CenterShapesButton);
             this.Controls.Add(this.RotateButton);
             this.Controls.Add(this.processInfoGraphic1);
-            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
@@ -120,4 +122,3 @@
         private IGProcess igProcess1;
     }
 }
-

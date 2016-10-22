@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace TestProject
@@ -27,14 +22,16 @@ namespace TestProject
             //processInfoGraphic1.EndInitialize();
 
 
-
             Font font = new Font("Tahoma", 8f);
             Color fromColor = Color.FromArgb(224, 237, 248);
             Color toColor = Color.FromArgb(94, 158, 219);
-            igProcess1.AddItem("Dosya Hazırlık", 0, font, fromColor, toColor);
-            igProcess1.AddItem("Dosya Kabul", 0, font, fromColor, toColor);
-            igProcess1.AddItem("Analiz", 0, font, fromColor, toColor);
-            igProcess1.AddItem("İstihbarat", 0, font, fromColor, Color.Empty);
+
+            igProcess1.AddItem("Dosya Hazırlık", 0, font, Color.Black, StringAlignment.Center, fromColor, toColor, LinearGradientMode.Horizontal, Color.DarkGray);
+            igProcess1.AddItem("Dosya Kabul", 0, font, Color.Red, StringAlignment.Center, fromColor, toColor, LinearGradientMode.BackwardDiagonal, Color.DarkGray);
+            igProcess1.AddItem("Analiz", 0, font, Color.White, StringAlignment.Center, fromColor, toColor, LinearGradientMode.ForwardDiagonal, Color.DarkGray);
+            igProcess1.AddItem("İstihbarat", 0, font, Color.Blue, StringAlignment.Center, fromColor, Color.Empty, LinearGradientMode.Vertical, Color.DarkGray);
+            igProcess1.AddItem("Kontrol", 0, font, Color.Blue, StringAlignment.Center, fromColor, Color.Empty, LinearGradientMode.Vertical, Color.DarkGray);
+            igProcess1.AddItem("Kesinleştirildi", 0, font, Color.Blue, StringAlignment.Center, fromColor, Color.Empty, LinearGradientMode.Vertical, Color.Empty);
             igProcess1.PrepareItems();
         }
 

@@ -3,31 +3,55 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Drawing.Drawing2D;
+using System;
 
 namespace TestProject
 {
+    public enum ItemRoundingShapeType
+    {
+        Rectangle,
+        Circular
+    }
+
     public partial class IGProcess : UserControl
     {
         private const int DefaultItemWidht = 50;
-        private const int DefaultItemHeight = 30;
-        private const int ItemTextLeftOrRightEmptyWidth = 15;
-        private const int ItemSeperatorWidth = 5;
+        private const int DefaultItemHeight = 35;
+        private const int ItemTextLeftOrRightEmptyWidth = 50;
+        private const int DefaultItemSeperatorWidth = -17;
+        private const int DefaultItemTriangleWidth = 20;
+        private const int DefaultItemRoundWidth = 15;
 
         public class IGProcessItem
         {
             public string Text { get; set; }
             public int Width { get; set; }
             public Font TextFont { get; set; }
-            public Rectangle BoundedRect { get; set; }
-            public Point Origin { get; set; }
+            public Color TextColor { get; set; }
+            public StringAlignment TextAlignment { get; set; }
+            public RectangleF BoundRect { get; set; }
+            public PointF Origin { get; set; }
             public GraphicsPath GrPath { get; set; }
             public Color BackColorFrom { get; set; }
             public Color BackColorTo { get; set; }
+            public LinearGradientMode BackColorGradientMode { get; set; }
+            public Color LineColor { get; set; }
 
-            public IGProcessItem(string text, int width, Font font, Color backColorFrom, Color backColorTo)
+            public IGProcessItem(
+                string text,
+                int width,
+                Font textFont,
+                Color textColor,
+                StringAlignment textAlignment,
+                Color backColorFrom,
+                Color backColorTo,
+                LinearGradientMode backColorGradientMode,
+                Color lineColor)
             {
                 Text = text;
-                TextFont = font;
+                TextFont = textFont;
+                TextColor = textColor;
+                TextAlignment = textAlignment;
 
                 if (width > 0)
                 {
@@ -35,34 +59,35 @@ namespace TestProject
                 }
                 else
                 {
-                    if(string.IsNullOrEmpty(text) || font == null)
+                    if (string.IsNullOrEmpty(text) || textFont == null)
                     {
                         Width = DefaultItemWidht;
                     }
                     else
                     {
-                        Width = TextRenderer.MeasureText(text, font).Width + (ItemTextLeftOrRightEmptyWidth * 2);
+                        Width = TextRenderer.MeasureText(text, textFont).Width + (ItemTextLeftOrRightEmptyWidth * 2);
                     }
                 }
 
                 BackColorFrom = (backColorFrom == Color.Empty ? Color.Blue : backColorFrom);
                 BackColorTo = backColorTo;
+                BackColorGradientMode = backColorGradientMode;
+                LineColor = lineColor;
             }
         }
 
-        public enum FirstLastItemShapeType
-        {
-            Rectangle,
-            RoundedRectangle,
-            Round
-        }
-
         private List<IGProcessItem> _items = new List<IGProcessItem>();
-        private int _itemHeight = DefaultItemHeight;
-        private bool _isInitializing = false;
-        private FirstLastItemShapeType _firstLastItemShapeType = FirstLastItemShapeType.Round;
-        
-        public int ItemHeight
+
+        private short _itemHeight = DefaultItemHeight;
+        private short _itemSeperatorWidth = DefaultItemSeperatorWidth;
+        private Color _backColorTo = Color.Empty;
+        private LinearGradientMode _backColorGradientMode = LinearGradientMode.Horizontal;
+        private ItemRoundingShapeType _itemRoundingShape = ItemRoundingShapeType.Circular;
+        private short _itemTriangleWidth = DefaultItemTriangleWidth;
+        private short _itemRoundWidth = DefaultItemRoundWidth;
+        private StringAlignment _itemAlignment = StringAlignment.Center;
+
+        public short ItemHeight
         {
             get { return _itemHeight; }
             set
@@ -72,23 +97,96 @@ namespace TestProject
                 Invalidate();
             }
         }
-
-        public IGProcess()
+        public short ItemSeperatorWidth
         {
-            _isInitializing = true;
-            try
+            get { return _itemSeperatorWidth; }
+            set
             {
-                InitializeComponent();
-            }
-            finally
-            {
-                _isInitializing = false;
+                _itemSeperatorWidth = value;
+                PrepareItems();
+                Invalidate();
             }
         }
 
-        public IGProcessItem AddItem(string text, int width, Font font, Color backColorFrom, Color backColorTo)
+        public ItemRoundingShapeType ItemRoundingShape
         {
-            IGProcessItem item = new IGProcessItem(text, width, font, backColorFrom, backColorTo);
+            get { return _itemRoundingShape; }
+            set
+            {
+                _itemRoundingShape = value;
+                PrepareGraphicsPath();
+                Invalidate();
+            }
+        }
+
+        public Color BackColorTo
+        {
+            get { return _backColorTo; }
+            set { _backColorTo = value; Invalidate(); }
+        }
+
+        public LinearGradientMode BackColorGradientMode
+        {
+            get { return _backColorGradientMode; }
+            set { _backColorGradientMode = value; Invalidate(); }
+        }
+
+        public short ItemTriangleWidth
+        {
+            get { return _itemTriangleWidth; }
+            set
+            {
+                _itemTriangleWidth = value;
+                PrepareGraphicsPath();
+                Invalidate();
+            }
+        }
+
+        public short ItemRoundWidth
+        {
+            get { return _itemRoundWidth; }
+            set
+            {
+                _itemRoundWidth = value;
+                PrepareGraphicsPath();
+                Invalidate();
+            }
+        }
+
+        public StringAlignment ItemAlignment
+        {
+            get { return _itemAlignment; }
+            set
+            {
+                _itemAlignment = value;
+                PrepareItems();
+                Invalidate();
+            }
+        }
+
+        public IGProcess()
+        {
+            InitializeComponent();
+
+            DoubleBuffered = true;
+            SetStyle(ControlStyles.SupportsTransparentBackColor |
+                     ControlStyles.DoubleBuffer |
+                     ControlStyles.AllPaintingInWmPaint |
+                     ControlStyles.UserPaint, true);
+        }
+
+        public IGProcessItem AddItem(
+            string text,
+            int width,
+            Font textFont,
+            Color textColor,
+            StringAlignment textAlignment,
+            Color backColorFrom,
+            Color backColorTo,
+            LinearGradientMode backColorGradientMode,
+            Color lineColor)
+        {
+            IGProcessItem item = new IGProcessItem(text, width, textFont, textColor, textAlignment, backColorFrom, backColorTo, backColorGradientMode, lineColor);
             _items.Add(item);
             return item;
         }
@@ -101,30 +199,86 @@ namespace TestProject
 
         public void PrepareItems()
         {
-            if (_items.Count == 0 || _isInitializing)
+            if (_items.Count == 0)
             {
                 return;
             }
 
             int itemsTotalWidht = _items.Sum(ob => ob.Width);
-            itemsTotalWidht += ((_items.Count - 1) * ItemSeperatorWidth);
+            itemsTotalWidht += ((_items.Count - 1) * _itemSeperatorWidth);
 
-            Point location = new Point((Width - itemsTotalWidht) / 2, (Height - ItemHeight) / 2);
+            int itemStartX = 0;
+            switch (_itemAlignment)
+            {
+                case StringAlignment.Center: itemStartX = (Width - itemsTotalWidht) / 2; break;
+                case StringAlignment.Far: itemStartX = Width - itemsTotalWidht - 5; break;
+                case StringAlignment.Near: itemStartX = 5; break;
+            }
+            PointF location = new PointF(itemStartX, (Height - _itemHeight) / 2);
 
             for (int i = 0; i < _items.Count; ++i)
             {
                 IGProcessItem pItem = _items[i];
-                pItem.BoundedRect = new Rectangle(location, new Size(pItem.Width, ItemHeight));
-                pItem.Origin = new Point(pItem.BoundedRect.X + pItem.BoundedRect.Width / 2, pItem.BoundedRect.Y + pItem.BoundedRect.Height / 2);
+                pItem.BoundRect = new RectangleF(location, new Size(pItem.Width, ItemHeight));
+                pItem.Origin = new PointF(pItem.BoundRect.X + pItem.BoundRect.Width / 2, pItem.BoundRect.Y + pItem.BoundRect.Height / 2);
+
+                location.X = location.X + pItem.Width + ItemSeperatorWidth;
+            }
+
+            PrepareGraphicsPath();
+        }
+
+         private void PrepareGraphicsPath()
+        {
+            for (int i = 0; i < _items.Count; ++i)
+            {
+                IGProcessItem pItem = _items[i];
+                RectangleF rect = pItem.BoundRect;
+                GraphicsPath grPath = new GraphicsPath();
+                bool isFirst = (i == 0);
+                bool isLast = (i == _items.Count - 1);
+                int itemRoundWidth = (_itemRoundingShape == ItemRoundingShapeType.Circular ? _itemRoundWidth : 0);
+
+                PointF[] points = new PointF[isFirst || isLast ? 5 : 6];
+
+                if (isLast)
+                {
+                    points[0] = new PointF(rect.X + rect.Width - itemRoundWidth, rect.Y);
+                    points[1] = new PointF(rect.X, rect.Y);
+                    points[2] = new PointF(rect.X + _itemTriangleWidth, rect.Y + rect.Height / 2);
+                    points[3] = new PointF(rect.X, rect.Y + rect.Height);
+                    points[4] = new PointF(rect.X + rect.Width - itemRoundWidth, rect.Y + rect.Height);
+                }
+                else
+                {
+                    points[0] = new PointF(rect.X + (isFirst ? itemRoundWidth : 0), rect.Y);
+                    points[1] = new PointF(rect.X + rect.Width - _itemTriangleWidth, rect.Y);
+                    points[2] = new PointF(rect.X + rect.Width, rect.Y + rect.Height / 2);
+                    points[3] = new PointF(rect.X + rect.Width - _itemTriangleWidth, rect.Y + rect.Height);
+                    points[4] = new PointF(rect.X + (isFirst ? itemRoundWidth : 0), rect.Y + rect.Height);
+                }
+
+                if (isFirst == false && isLast == false)
+                {
+                    points[5] = new PointF(rect.X + _itemTriangleWidth, rect.Y + rect.Height / 2);
+                }
+
+                grPath.AddLines(points);
+
+                if ((isFirst || isLast) && _itemRoundingShape == ItemRoundingShapeType.Circular)
+                {
+                    int roundRectWidth = 2 * _itemRoundWidth;
+                    RectangleF r = new RectangleF(rect.X + (isLast ? rect.Width - roundRectWidth : 0), rect.Y, roundRectWidth, rect.Height);
+                    grPath.AddArc(r, 90, (isLast ? -1 : 1) * 180);
+                }
+
+                grPath.CloseFigure();
 
                 if (pItem.GrPath != null)
                 {
                     pItem.GrPath.Dispose();
                 }
-                pItem.GrPath = new GraphicsPath();
-                pItem.GrPath.AddRectangle(pItem.BoundedRect);
-
-                location.X = location.X + pItem.Width + ItemSeperatorWidth;
+                pItem.GrPath = grPath;
             }
         }
 
@@ -138,67 +292,92 @@ namespace TestProject
             }
             else
             {
-                brush = new LinearGradientBrush(item.BoundedRect, item.BackColorFrom, item.BackColorTo, LinearGradientMode.Horizontal);
+                brush = new LinearGradientBrush(item.BoundRect, item.BackColorFrom, item.BackColorTo, item.BackColorGradientMode);
             }
 
             gr.FillPath(brush, item.GrPath);
 
+            if (item.LineColor != Color.Empty)
+            {
+                gr.DrawPath(new Pen(item.LineColor), item.GrPath);
+            }
 
-            //LinearGradientBrush gradientBrush;
+            StringFormat sf = new StringFormat();
+            sf.LineAlignment = StringAlignment.Center;
+            sf.Alignment = item.TextAlignment; ;
+            RectangleF textRect = item.BoundRect;
+            textRect.X += (_itemTriangleWidth + 3);
+            textRect.Width -= (2 * _itemTriangleWidth + 3);
 
-            //if (isActive)
-            //{
-            //    gr.FillPath(new SolidBrush(Color.FromArgb(245, 124, 45)), _shapePath);
-            //    gradientBrush = new LinearGradientBrush(_clientRectangle, Color.FromArgb(224, 237, 248), Color.FromArgb(94, 158, 219), LinearGradientMode.ForwardDiagonal);
-            //}
-            //else
-            //{
-            //    gr.FillEllipse(new SolidBrush(Color.DarkGray), _clientRectangle);
-            //    gradientBrush = new LinearGradientBrush(_clientRectangle, Color.FromArgb(224, 237, 248), Color.Gray, LinearGradientMode.ForwardDiagonal);
-            //}
+            gr.DrawString(item.Text, item.TextFont, new SolidBrush(item.TextColor), textRect, sf);
 
-            //Rectangle tmpRect = _clientRectangle;
-            //tmpRect.Inflate(-3, -3);
-            //gr.FillEllipse(gradientBrush, tmpRect);
 
-            //StringFormat sf = new StringFormat();
-            //sf.LineAlignment = StringAlignment.Center;
-            //sf.Alignment = StringAlignment.Center;
-            //gr.DrawString(_text, TextFont, new SolidBrush(Color.Black), _clientRectangle, sf);
 
-            //gr.FillRectangle(Brushes.Blue, BoundedRect);
+            //Pen p = new Pen(Color.Red, 1.0f);
+            //gr.DrawRectangle(p, Rectangle.Round(textRect));
+        }
 
+        private void Draw(Graphics gr)
+        {
+            if (_items.Count == 0)
+            {
+                return;
+            }
+
+            gr.SmoothingMode = SmoothingMode.AntiAlias;
+            gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+            if (BackgroundImage == null)
+            {
+                if (_backColorTo == Color.Empty)
+                {
+                    gr.Clear(BackColor);
+                }
+                else
+                {
+                    LinearGradientBrush brush = new LinearGradientBrush(ClientRectangle, BackColor, _backColorTo, _backColorGradientMode);
+                    gr.FillRectangle(brush, ClientRectangle);
+                }
+            }
+
+            foreach (IGProcessItem item in _items)
+            {
+                DrawProcessItem(gr, item);
+            }
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
 
-            if (_items.Count == 0)
+            if (DesignMode)
             {
+                PrepareDemoItems();
+                Draw(e.Graphics);
+                e.Graphics.DrawString("Demo", new Font("Tahoma", 8), Brushes.Black, Point.Empty);
                 return;
             }
 
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            e.Graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-            e.Graphics.Clear(Color.LightGray);
-
-            foreach (IGProcessItem item in _items)
-            {
-                DrawProcessItem(e.Graphics, item);
-            }
-
-
-            //if (DesignMode)
-            //{
-            //    Demo();
-            //}
-
-            //if (DesignMode)
-            //{
-            //    e.Graphics.DrawString("Demo", new Font("Tahoma", 8), Brushes.Black, Point.Empty);
-            //}
+            Draw(e.Graphics);
         }
 
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            PrepareItems();
+            Invalidate();
+        }
+
+        private void PrepareDemoItems()
+        {
+            _items.Clear();
+            Font font = new Font("Tahoma", 8f);
+            Color fromColor = Color.FromArgb(224, 237, 248);
+            Color toColor = Color.FromArgb(94, 158, 219);
+            AddItem("Dosya Hazırlık", 0, font, Color.Black, StringAlignment.Center, fromColor, toColor, LinearGradientMode.Horizontal, Color.DarkGray);
+            AddItem("   ...   ", 0, font, Color.Red, StringAlignment.Center, fromColor, toColor, LinearGradientMode.BackwardDiagonal, Color.DarkGray);
+            AddItem("Kontrol", 0, font, Color.White, StringAlignment.Center, fromColor, toColor, LinearGradientMode.ForwardDiagonal, Color.DarkGray);
+            PrepareItems();
+        }
     }
 }
