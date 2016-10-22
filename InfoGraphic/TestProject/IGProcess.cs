@@ -36,6 +36,8 @@ namespace TestProject
             public Color BackColorTo { get; set; }
             public LinearGradientMode BackColorGradientMode { get; set; }
             public Color LineColor { get; set; }
+            public float LineWidth { get; set; }
+            public Image Icon { get; set; }
 
             public IGProcessItem(
                 string text,
@@ -46,7 +48,9 @@ namespace TestProject
                 Color backColorFrom,
                 Color backColorTo,
                 LinearGradientMode backColorGradientMode,
-                Color lineColor)
+                Color lineColor,
+                float lineWidth,
+                Image icon)
             {
                 Text = text;
                 TextFont = textFont;
@@ -73,6 +77,8 @@ namespace TestProject
                 BackColorTo = backColorTo;
                 BackColorGradientMode = backColorGradientMode;
                 LineColor = lineColor;
+                LineWidth = lineWidth;
+                Icon = icon;
             }
         }
 
@@ -184,9 +190,24 @@ namespace TestProject
             Color backColorFrom,
             Color backColorTo,
             LinearGradientMode backColorGradientMode,
-            Color lineColor)
+            Color lineColor,
+            float lineWidth,
+            Image icon)
         {
-            IGProcessItem item = new IGProcessItem(text, width, textFont, textColor, textAlignment, backColorFrom, backColorTo, backColorGradientMode, lineColor);
+            IGProcessItem item = new IGProcessItem
+            (
+                text,
+                width, 
+                textFont, 
+                textColor, 
+                textAlignment, 
+                backColorFrom, 
+                backColorTo, 
+                backColorGradientMode, 
+                lineColor,
+                lineWidth,
+                icon
+            );
             _items.Add(item);
             return item;
         }
@@ -299,22 +320,23 @@ namespace TestProject
 
             if (item.LineColor != Color.Empty)
             {
-                gr.DrawPath(new Pen(item.LineColor), item.GrPath);
+                gr.DrawPath(new Pen(item.LineColor, item.LineWidth), item.GrPath);
+            }
+
+            if (item.Icon != null)
+            {
+                gr.DrawImage(item.Icon, new PointF(item.BoundRect.X + _itemTriangleWidth, item.BoundRect.Y + (item.BoundRect.Height - item.Icon.Height) / 2));
             }
 
             StringFormat sf = new StringFormat();
             sf.LineAlignment = StringAlignment.Center;
             sf.Alignment = item.TextAlignment; ;
             RectangleF textRect = item.BoundRect;
-            textRect.X += (_itemTriangleWidth + 3);
+            textRect.X += (_itemTriangleWidth + 3) + (item.Icon != null ? item.Icon.Width : 0);
             textRect.Width -= (2 * _itemTriangleWidth + 3);
+            textRect.Y += 1;
 
             gr.DrawString(item.Text, item.TextFont, new SolidBrush(item.TextColor), textRect, sf);
-
-
-
-            //Pen p = new Pen(Color.Red, 1.0f);
-            //gr.DrawRectangle(p, Rectangle.Round(textRect));
         }
 
         private void Draw(Graphics gr)
@@ -374,9 +396,9 @@ namespace TestProject
             Font font = new Font("Tahoma", 8f);
             Color fromColor = Color.FromArgb(224, 237, 248);
             Color toColor = Color.FromArgb(94, 158, 219);
-            AddItem("Dosya Hazırlık", 0, font, Color.Black, StringAlignment.Center, fromColor, toColor, LinearGradientMode.Horizontal, Color.DarkGray);
-            AddItem("   ...   ", 0, font, Color.Red, StringAlignment.Center, fromColor, toColor, LinearGradientMode.BackwardDiagonal, Color.DarkGray);
-            AddItem("Kontrol", 0, font, Color.White, StringAlignment.Center, fromColor, toColor, LinearGradientMode.ForwardDiagonal, Color.DarkGray);
+            AddItem("Dosya Hazırlık", 0, font, Color.Black, StringAlignment.Center, fromColor, toColor, LinearGradientMode.Horizontal, Color.DarkGray, 1.0f, null);
+            AddItem("   ...   ", 0, font, Color.Red, StringAlignment.Center, fromColor, toColor, LinearGradientMode.BackwardDiagonal, Color.DarkGray, 1.0f, null);
+            AddItem("Analiz Kontrol", 0, font, Color.White, StringAlignment.Center, fromColor, toColor, LinearGradientMode.ForwardDiagonal, Color.DarkGray, 1.0f, null);
             PrepareItems();
         }
     }
