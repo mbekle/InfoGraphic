@@ -38,7 +38,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(26, 197);
+            this.button1.Location = new System.Drawing.Point(26, 230);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(97, 40);
             this.button1.TabIndex = 4;
@@ -58,7 +58,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(134, 197);
+            this.button2.Location = new System.Drawing.Point(129, 230);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(97, 40);
             this.button2.TabIndex = 4;
@@ -68,10 +68,8 @@
             // 
             // igProcess1
             // 
-            this.igProcess1.BackColor = System.Drawing.Color.AntiqueWhite;
             this.igProcess1.BackColorGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
             this.igProcess1.BackColorTo = System.Drawing.Color.Empty;
-            this.igProcess1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("igProcess1.BackgroundImage")));
             this.igProcess1.Dock = System.Windows.Forms.DockStyle.Top;
             this.igProcess1.ItemAlignment = System.Drawing.StringAlignment.Center;
             this.igProcess1.ItemHeight = ((short)(35));
@@ -81,17 +79,18 @@
             this.igProcess1.ItemTriangleWidth = ((short)(20));
             this.igProcess1.Location = new System.Drawing.Point(0, 0);
             this.igProcess1.Name = "igProcess1";
-            this.igProcess1.Size = new System.Drawing.Size(1500, 98);
-            this.igProcess1.TabIndex = 3;
+            this.igProcess1.Size = new System.Drawing.Size(1481, 103);
+            this.igProcess1.TabIndex = 5;
+            this.igProcess1.Text = "ıgProcess1";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1500, 292);
+            this.ClientSize = new System.Drawing.Size(1481, 384);
+            this.Controls.Add(this.igProcess1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.igProcess1);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
@@ -100,9 +99,9 @@
         }
 
         #endregion
-        private IGProcess igProcess1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.Button button2;
+        private IGProcess igProcess1;
     }
 }

@@ -35,9 +35,9 @@
             this.VerticalButton = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
-            this.igProcess1 = new TestProject.IGProcess();
-            this.processInfoGraphic1 = new TestProject.ProcessInfoGraphic();
             this.button2 = new System.Windows.Forms.Button();
+            this.igProcess1UC = new TestProject.IGProcessUC();
+            this.processInfoGraphic1 = new TestProject.ProcessInfoGraphic();
             this.SuspendLayout();
             // 
             // RotateButton
@@ -92,23 +92,32 @@
             this.imageList1.Images.SetKeyName(3, "katomic.png");
             this.imageList1.Images.SetKeyName(4, "remote.png");
             // 
-            // igProcess1
+            // button2
             // 
-            this.igProcess1.BackColor = System.Drawing.Color.AntiqueWhite;
-            this.igProcess1.BackColorGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
-            this.igProcess1.BackColorTo = System.Drawing.Color.Empty;
-            this.igProcess1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("igProcess1.BackgroundImage")));
-            this.igProcess1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.igProcess1.ItemAlignment = System.Drawing.StringAlignment.Center;
-            this.igProcess1.ItemHeight = ((short)(35));
-            this.igProcess1.ItemRoundingShape = TestProject.ItemRoundingShapeType.Circular;
-            this.igProcess1.ItemRoundWidth = ((short)(15));
-            this.igProcess1.ItemSeperatorWidth = ((short)(-17));
-            this.igProcess1.ItemTriangleWidth = ((short)(20));
-            this.igProcess1.Location = new System.Drawing.Point(0, 0);
-            this.igProcess1.Name = "igProcess1";
-            this.igProcess1.Size = new System.Drawing.Size(1482, 98);
-            this.igProcess1.TabIndex = 3;
+            this.button2.Location = new System.Drawing.Point(134, 197);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(97, 40);
+            this.button2.TabIndex = 4;
+            this.button2.Text = "button2";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // igProcess1UC
+            // 
+            this.igProcess1UC.BackColor = System.Drawing.Color.AntiqueWhite;
+            this.igProcess1UC.BackColorGradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.igProcess1UC.BackColorTo = System.Drawing.Color.Empty;
+            this.igProcess1UC.Dock = System.Windows.Forms.DockStyle.Top;
+            this.igProcess1UC.ItemAlignment = System.Drawing.StringAlignment.Center;
+            this.igProcess1UC.ItemHeight = ((short)(35));
+            this.igProcess1UC.ItemRoundingShape = TestProject.ItemRoundingShapeType.Circular;
+            this.igProcess1UC.ItemRoundWidth = ((short)(15));
+            this.igProcess1UC.ItemSeperatorWidth = ((short)(-17));
+            this.igProcess1UC.ItemTriangleWidth = ((short)(20));
+            this.igProcess1UC.Location = new System.Drawing.Point(0, 0);
+            this.igProcess1UC.Name = "igProcess1UC";
+            this.igProcess1UC.Size = new System.Drawing.Size(1482, 98);
+            this.igProcess1UC.TabIndex = 3;
             // 
             // processInfoGraphic1
             // 
@@ -122,16 +131,6 @@
             this.processInfoGraphic1.Visible = false;
             this.processInfoGraphic1.Resize += new System.EventHandler(this.processInfoGraphic1_Resize);
             // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(134, 197);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(97, 40);
-            this.button2.TabIndex = 4;
-            this.button2.Text = "button2";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -139,7 +138,7 @@
             this.ClientSize = new System.Drawing.Size(1482, 874);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.igProcess1);
+            this.Controls.Add(this.igProcess1UC);
             this.Controls.Add(this.VerticalButton);
             this.Controls.Add(this.CenterShapesButton);
             this.Controls.Add(this.RotateButton);
@@ -157,7 +156,7 @@
         private System.Windows.Forms.Button RotateButton;
         private System.Windows.Forms.Button CenterShapesButton;
         private System.Windows.Forms.Button VerticalButton;
-        private IGProcess igProcess1;
+        private IGProcessUC igProcess1UC;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.Button button2;

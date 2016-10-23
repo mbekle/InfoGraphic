@@ -14,7 +14,6 @@ namespace TestProject
         {
             InitializeComponent();
 
-
             Font font = new Font("Tahoma", 8f);
             Color fromColor = Color.FromArgb(224, 237, 248);
             Color toColor = Color.FromArgb(94, 158, 219);

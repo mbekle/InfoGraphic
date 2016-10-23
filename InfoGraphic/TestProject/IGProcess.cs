@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
-using System.Drawing.Drawing2D;
-using System;
 
 namespace TestProject
 {
@@ -13,7 +13,7 @@ namespace TestProject
         Circular
     }
 
-    public partial class IGProcess : UserControl
+    public partial class IGProcess : Control
     {
         private const int DefaultItemWidht = 50;
         private const int DefaultItemHeight = 35;
@@ -197,13 +197,13 @@ namespace TestProject
             IGProcessItem item = new IGProcessItem
             (
                 text,
-                width, 
-                textFont, 
-                textColor, 
-                textAlignment, 
-                backColorFrom, 
-                backColorTo, 
-                backColorGradientMode, 
+                width,
+                textFont,
+                textColor,
+                textAlignment,
+                backColorFrom,
+                backColorTo,
+                backColorGradientMode,
                 lineColor,
                 lineWidth,
                 icon
@@ -249,7 +249,7 @@ namespace TestProject
             PrepareGraphicsPath();
         }
 
-         private void PrepareGraphicsPath()
+        private void PrepareGraphicsPath()
         {
             for (int i = 0; i < _items.Count; ++i)
             {

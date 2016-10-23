@@ -11,8 +11,8 @@ namespace TestProject
         private ProcessInfoGraphic.ProcessItem hazine;
         private ProcessInfoGraphic.ProcessItem tahm1;
 
-        private IGProcess.IGProcessItem _piAnaliz;
-        private IGProcess.IGProcessItem _piDosyaHazirlik;
+        private IGProcessUC.IGProcessItem _piAnaliz;
+        private IGProcessUC.IGProcessItem _piDosyaHazirlik;
 
         public Form1()
         {
@@ -29,13 +29,13 @@ namespace TestProject
             Font font = new Font("Tahoma", 8f);
             Color fromColor = Color.FromArgb(224, 237, 248);
             Color toColor = Color.FromArgb(94, 158, 219);
-            _piDosyaHazirlik = igProcess1.AddItem("Dosya Hazırlık", 0, font, Color.Black, StringAlignment.Center, fromColor, toColor, LinearGradientMode.Horizontal, Color.DarkGray, 1.0f, null);
-            igProcess1.AddItem("Dosya Kabul", 0, font, Color.Red, StringAlignment.Center, fromColor, toColor, LinearGradientMode.BackwardDiagonal, Color.DarkGray, 1.0f, null);
-            _piAnaliz = igProcess1.AddItem("Analiz", 0, font, Color.White, StringAlignment.Center, fromColor, toColor, LinearGradientMode.ForwardDiagonal, Color.DarkGray, 1.0f, null);
-            igProcess1.AddItem("İstihbarat", 0, font, Color.Blue, StringAlignment.Center, fromColor, Color.Empty, LinearGradientMode.Vertical, Color.DarkGray, 1.0f, null);
-            igProcess1.AddItem("Analiz Kontrol", 0, font, Color.Blue, StringAlignment.Center, fromColor, Color.Empty, LinearGradientMode.Vertical, Color.DarkGray, 1.0f, null);
-            igProcess1.AddItem("Kesinleştirildi", 0, font, Color.Blue, StringAlignment.Center, fromColor, Color.Empty, LinearGradientMode.Vertical, Color.Empty, 1.0f, null);
-            igProcess1.PrepareItems();
+            _piDosyaHazirlik = igProcess1UC.AddItem("Dosya Hazırlık", 0, font, Color.Black, StringAlignment.Center, fromColor, toColor, LinearGradientMode.Horizontal, Color.DarkGray, 1.0f, null);
+            igProcess1UC.AddItem("Dosya Kabul", 0, font, Color.Red, StringAlignment.Center, fromColor, toColor, LinearGradientMode.BackwardDiagonal, Color.DarkGray, 1.0f, null);
+            _piAnaliz = igProcess1UC.AddItem("Analiz", 0, font, Color.White, StringAlignment.Center, fromColor, toColor, LinearGradientMode.ForwardDiagonal, Color.DarkGray, 1.0f, null);
+            igProcess1UC.AddItem("İstihbarat", 0, font, Color.Blue, StringAlignment.Center, fromColor, Color.Empty, LinearGradientMode.Vertical, Color.DarkGray, 1.0f, null);
+            igProcess1UC.AddItem("Analiz Kontrol", 0, font, Color.Blue, StringAlignment.Center, fromColor, Color.Empty, LinearGradientMode.Vertical, Color.DarkGray, 1.0f, null);
+            igProcess1UC.AddItem("Kesinleştirildi", 0, font, Color.Blue, StringAlignment.Center, fromColor, Color.Empty, LinearGradientMode.Vertical, Color.Empty, 1.0f, null);
+            igProcess1UC.PrepareItems();
         }
 
         private void RotateButton_Click(object sender, EventArgs e)
@@ -73,14 +73,14 @@ namespace TestProject
             _piAnaliz.BackColorTo = Color.DarkGreen;
             _piAnaliz.BackColorGradientMode = LinearGradientMode.ForwardDiagonal;
             _piAnaliz.LineColor = Color.Red;
-            igProcess1.Refresh();
+            igProcess1UC.Refresh();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             //igProcess1.ItemAlignment = (StringAlignment)(((int)igProcess1.ItemAlignment + 1) % 3);
             _piDosyaHazirlik.TextAlignment = (StringAlignment)(((int)_piDosyaHazirlik.TextAlignment + 1) % 3);
-            igProcess1.Refresh();
+            igProcess1UC.Refresh();
         }
     }
 }

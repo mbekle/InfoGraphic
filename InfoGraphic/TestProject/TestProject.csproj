@@ -54,10 +54,16 @@
     </Compile>
     <Compile Include="GraphicHelper.cs" />
     <Compile Include="IGProcess.cs">
-      <SubType>UserControl</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="IGProcess.Designer.cs">
       <DependentUpon>IGProcess.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IGProcessUC.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="IGProcessUC.Designer.cs">
+      <DependentUpon>IGProcessUC.cs</DependentUpon>
     </Compile>
     <Compile Include="ProcessInfoGraphic.cs">
       <SubType>UserControl</SubType>
@@ -70,8 +76,8 @@
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="IGProcess.resx">
-      <DependentUpon>IGProcess.cs</DependentUpon>
+    <EmbeddedResource Include="IGProcessUC.resx">
+      <DependentUpon>IGProcessUC.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
