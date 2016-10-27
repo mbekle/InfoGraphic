@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -56,7 +57,10 @@ namespace TestProject
         private StringAlignment _itemAlignment = StringAlignment.Center;
         private short _itemTextLeftRightEmptyWidth = DefaultItemTextLeftRightEmptyWidth;
         public bool _shrinker = false;
+        private int _widthBeforeShrink = 0;
 
+
+        [Category("Process Items"),Description("Herbir süreç elemanının yüksekliği")]
         public short ItemHeight
         {
             get { return _itemHeight; }
@@ -67,6 +71,8 @@ namespace TestProject
                 Invalidate();
             }
         }
+
+        [Category("Process Items"), Description("Süreç elemanları arasındaki boşluk miktarı")]
         public short ItemSeperatorWidth
         {
             get { return _itemSeperatorWidth; }
@@ -78,6 +84,7 @@ namespace TestProject
             }
         }
 
+        [Category("Process Items"), Description("İlk ve son süreç elemanının çizim şekli")]
         public ItemRoundingShapeType ItemRoundingShape
         {
             get { return _itemRoundingShape; }
@@ -89,18 +96,21 @@ namespace TestProject
             }
         }
 
+        [Description("Süreç bileşeninin arkaplan ikinci rengi, bir renk verilirse renk geçişi çizilir")]
         public Color BackColorTo
         {
             get { return _backColorTo; }
             set { _backColorTo = value; Invalidate(); }
         }
 
+        [Description("Süreç bileşeninin arkaplan renginin renk geçişi yöntemini gösterir")]
         public LinearGradientMode BackColorGradientMode
         {
             get { return _backColorGradientMode; }
             set { _backColorGradientMode = value; Invalidate(); }
         }
 
+        [Category("Process Items"), Description("Ara süreç elemanlarının ok gösterim genişliği")]
         public short ItemTriangleWidth
         {
             get { return _itemTriangleWidth; }
@@ -112,6 +122,7 @@ namespace TestProject
             }
         }
 
+        [Category("Process Items"), Description("İlk ve son süreç elemanının çizim şekli yuvarlak olma ölçüsü")]
         public short ItemRoundWidth
         {
             get { return _itemRoundWidth; }
@@ -123,6 +134,7 @@ namespace TestProject
             }
         }
 
+        [Category("Process Items"), Description("Süreç elemanlarının sağ, sol ve merkez olarak hizalanması")]
         public StringAlignment ItemAlignment
         {
             get { return _itemAlignment; }
@@ -134,6 +146,7 @@ namespace TestProject
             }
         }
 
+        [Category("Process Items"), Description("Her bir süreç elemanının adının sağında ve solunda bırakılacak boşluk")]
         public short ItemTextLeftRightEmptyWidth
         {
             get { return _itemTextLeftRightEmptyWidth; }
@@ -145,17 +158,7 @@ namespace TestProject
             }
         }
 
-        public IGProcess()
-        {
-            InitializeComponent();
-
-            DoubleBuffered = true;
-            SetStyle(ControlStyles.SupportsTransparentBackColor |
-                     ControlStyles.DoubleBuffer |
-                     ControlStyles.AllPaintingInWmPaint |
-                     ControlStyles.UserPaint, true);
-        }
-
+        [Description("Süreç bileşeni yeniden boyutlanınca elemanlarının ölçeklenip ölçeklenmeyeceğini gösterir")]
         public bool Shrinker
         {
             get { return _shrinker; }
@@ -168,6 +171,17 @@ namespace TestProject
                     Invalidate();
                 }
             }
+        }
+
+        public IGProcess()
+        {
+            InitializeComponent();
+
+            DoubleBuffered = true;
+            SetStyle(ControlStyles.SupportsTransparentBackColor |
+                     ControlStyles.DoubleBuffer |
+                     ControlStyles.AllPaintingInWmPaint |
+                     ControlStyles.UserPaint, true);
         }
 
         public IGProcessItem AddItem(
@@ -400,19 +414,44 @@ namespace TestProject
             Draw(e.Graphics);
         }
 
+        public int TotalW()
+        {
+            return GetItemsTotalWidth();
+        }
+
         private void ShrinkItems()
         {
-            int diff = GetItemsTotalWidth() - Width + (_itemAlignment != StringAlignment.Center ? DefaultNearFarEmptyWidth : 0);
+            int totalWidth = GetItemsTotalWidth() + (_itemAlignment != StringAlignment.Center ? DefaultNearFarEmptyWidth : 0);
+            int diff = totalWidth - Width;
 
-            if (diff < 0)
+            if (diff <= 0)
             {
+                if (_widthBeforeShrink == 0 || Math.Abs(diff) < (_items.Count - 1))
+                {
+                    return;
+                }
+
+                if (totalWidth >= _widthBeforeShrink)
+                {
+                    _widthBeforeShrink = 0;
+                }
+                else
+                {
+                    for (int i = 0; i < _items.Count; ++i)
+                    {
+                        ++_items[i].Width;
+                    }
+                }
+
                 return;
             }
 
-            if (diff < _items.Count)
+            if (_widthBeforeShrink == 0)
             {
-                diff = _items.Count + 2;
+                _widthBeforeShrink = GetItemsTotalWidth();
             }
+
+            diff = _items.Count;
 
             while (diff > 0)
             {
@@ -421,14 +460,12 @@ namespace TestProject
                     --_items[i].Width;
                 }
             }
-
-            return;
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-
+            
             if (_shrinker)
             {
                 ShrinkItems();

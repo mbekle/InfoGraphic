@@ -45,5 +45,10 @@ namespace TestProject
         {
             igProcess1.ItemAlignment = (StringAlignment)(((int)igProcess1.ItemAlignment + 1) % 3);
         }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            textBox1.Text = igProcess1.TotalW().ToString();
+        }
     }
 }
