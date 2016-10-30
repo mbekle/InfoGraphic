@@ -26,24 +26,94 @@ namespace TestProject
 
         public class IGProcessItem
         {
+            public int Width { get; }
             public string Text { get; set; }
-            public int Width { get; set; }
             public Font TextFont { get; set; }
             public Color TextColor { get; set; }
             public StringAlignment TextAlignment { get; set; }
+            public float TextAngle { get; set; }
             public Color BackColorFrom { get; set; }
             public Color BackColorTo { get; set; }
             public LinearGradientMode BackColorGradientMode { get; set; }
             public Color LineColor { get; set; }
             public float LineWidth { get; set; }
             public Image Icon { get; set; }
+
+            public void Refresh()
+            {
+                IGProcessItemInner item = (IGProcessItemInner)this;
+                using (Graphics gr = item.Owner.CreateGraphics())
+                {
+                    item.Owner.ConfigureGraphics(gr);
+                    item.Draw(gr);
+                }
+            }
         }
 
         private class IGProcessItemInner : IGProcessItem
         {
+            public IGProcess Owner { get; set; }
+            public new int Width { get; set; }
             public PointF Origin { get; set; }
             public RectangleF BoundRect { get; set; }
             public GraphicsPath GrPath { get; set; }
+
+            public void Draw(Graphics gr)
+            {
+                Brush brush;
+
+                if (BackColorTo == Color.Empty)
+                {
+                    brush = new SolidBrush(BackColorFrom);
+                }
+                else
+                {
+                    brush = new LinearGradientBrush(BoundRect, BackColorFrom, BackColorTo, BackColorGradientMode);
+                }
+
+                gr.FillPath(brush, GrPath);
+
+                if (LineColor != Color.Empty)
+                {
+                    gr.DrawPath(new Pen(LineColor, LineWidth), GrPath);
+                }
+
+                if (Icon != null)
+                {
+                    gr.DrawImage(Icon, new PointF(BoundRect.X + Owner.ItemTriangleWidth, BoundRect.Y + (BoundRect.Height - Icon.Height) / 2));
+                }
+
+                StringFormat sf = new StringFormat();
+                sf.LineAlignment = StringAlignment.Center;
+                sf.Alignment = TextAlignment;
+                RectangleF textRect = BoundRect;
+
+                if (Owner.IsVertical)
+                {
+                    textRect.Y += (Owner.ItemTriangleWidth + 3) + (Icon != null ? Icon.Width : 0);
+                    textRect.Height -= (2 * Owner.ItemTriangleWidth + 3);
+                }
+                else
+                {
+                    textRect.X += (Owner.ItemTriangleWidth + 3) + (Icon != null ? Icon.Width : 0);
+                    textRect.Width -= (2 * Owner.ItemTriangleWidth + 3);
+                }
+
+                textRect.Y += 1;
+
+                if (TextAngle == 0.0f)
+                {
+                    gr.DrawString(Text, TextFont, new SolidBrush(TextColor), textRect, sf);
+                }
+                else
+                {
+                    gr.TranslateTransform(textRect.Left + textRect.Width / 2, textRect.Top + textRect.Height / 2);
+                    gr.RotateTransform(TextAngle);
+                    RectangleF newTextRect = new RectangleF(-textRect.Width / 2, -textRect.Height / 2, textRect.Width, textRect.Height);
+                    gr.DrawString(Text, TextFont, new SolidBrush(TextColor), newTextRect, sf);
+                    gr.ResetTransform();
+                }
+            }
         }
 
         private List<IGProcessItemInner> _items = new List<IGProcessItemInner>();
@@ -58,7 +128,13 @@ namespace TestProject
         private short _itemTextLeftRightEmptyWidth = DefaultItemTextLeftRightEmptyWidth;
         public bool _shrinker = false;
         private int _widthBeforeShrink = 0;
+        private bool _isVertical = false;
 
+        [Browsable(false)]
+        public IGProcessItem[] Items
+        {
+            get { return _items.ToArray(); }
+        }
 
         [Category("Process Items"),Description("Herbir süreç elemanının yüksekliği")]
         public short ItemHeight
@@ -91,7 +167,7 @@ namespace TestProject
             set
             {
                 _itemRoundingShape = value;
-                PrepareGraphicsPath();
+                PrepareItemsGraphicsPath();
                 Invalidate();
             }
         }
@@ -117,7 +193,7 @@ namespace TestProject
             set
             {
                 _itemTriangleWidth = value;
-                PrepareGraphicsPath();
+                PrepareItemsGraphicsPath();
                 Invalidate();
             }
         }
@@ -129,7 +205,7 @@ namespace TestProject
             set
             {
                 _itemRoundWidth = value;
-                PrepareGraphicsPath();
+                PrepareItemsGraphicsPath();
                 Invalidate();
             }
         }
@@ -173,6 +249,19 @@ namespace TestProject
             }
         }
 
+        [Description("Süreç bileşeninin dikey olarak çizilip çizilmeyeceğini gösterir")]
+        public bool IsVertical
+        {
+            get { return _isVertical; }
+            set
+            {
+                _isVertical = value;
+                PrepareItems();
+                Invalidate();
+            }
+        }
+
+
         public IGProcess()
         {
             InitializeComponent();
@@ -190,6 +279,7 @@ namespace TestProject
             Font textFont,
             Color textColor,
             StringAlignment textAlignment,
+            float textAngle,
             Color backColorFrom,
             Color backColorTo,
             LinearGradientMode backColorGradientMode,
@@ -199,11 +289,13 @@ namespace TestProject
         {
             IGProcessItemInner item = new IGProcessItemInner()
             {
+                Owner = this,
                 Text = text,
                 Width = width,
                 TextFont = textFont,
                 TextColor = textColor,
                 TextAlignment = textAlignment,
+                TextAngle = textAngle,
                 BackColorFrom = (backColorFrom == Color.Empty ? Color.Blue : backColorFrom),
                 BackColorTo = backColorTo,
                 BackColorGradientMode = backColorGradientMode,
@@ -253,34 +345,46 @@ namespace TestProject
                 }
                 else
                 {
-                    pi.Width = TextRenderer.MeasureText(pi.Text, pi.TextFont).Width + (_itemTextLeftRightEmptyWidth * 2);
+                    Size textSize = TextRenderer.MeasureText(pi.Text, pi.TextFont);
+                    pi.Width = (_isVertical ? textSize.Height : textSize.Width) + (_itemTextLeftRightEmptyWidth * 2);
                 }
             }
 
             int itemsTotalWidth = GetItemsTotalWidth();
-            int itemStartX = 0;
+            float itemStartX_Y = 0;
+            int w_h = (_isVertical ? Height : Width);
 
             switch (_itemAlignment)
             {
-                case StringAlignment.Center: itemStartX = (Width - itemsTotalWidth) / 2; break;
-                case StringAlignment.Far: itemStartX = Width - itemsTotalWidth - DefaultNearFarEmptyWidth; break;
-                case StringAlignment.Near: itemStartX = DefaultNearFarEmptyWidth; break;
+                case StringAlignment.Center: itemStartX_Y = (w_h - itemsTotalWidth) / 2; break;
+                case StringAlignment.Far: itemStartX_Y = w_h - itemsTotalWidth - DefaultNearFarEmptyWidth; break;
+                case StringAlignment.Near: itemStartX_Y = DefaultNearFarEmptyWidth; break;
             }
-            PointF location = new PointF(itemStartX, (Height - _itemHeight) / 2);
+
+            float x = (_isVertical ? (Width - _itemHeight) / 2 : itemStartX_Y);
+            float y = (_isVertical ? itemStartX_Y : (Height - _itemHeight) / 2);
+            PointF location = new PointF(x, y);
 
             for (int i = 0; i < _items.Count; ++i)
             {
                 IGProcessItemInner pItem = _items[i];
-                pItem.BoundRect = new RectangleF(location, new Size(pItem.Width, ItemHeight));
+                pItem.BoundRect = new RectangleF(location, new Size((_isVertical ? _itemHeight : pItem.Width), (_isVertical ? pItem.Width : _itemHeight)));
                 pItem.Origin = new PointF(pItem.BoundRect.X + pItem.BoundRect.Width / 2, pItem.BoundRect.Y + pItem.BoundRect.Height / 2);
 
-                location.X = location.X + pItem.Width + ItemSeperatorWidth;
+                if (_isVertical)
+                {
+                    location.Y += pItem.Width + ItemSeperatorWidth;
+                }
+                else
+                {
+                    location.X += pItem.Width + ItemSeperatorWidth;
+                }
             }
 
-            PrepareGraphicsPath();
+            PrepareItemsGraphicsPath();
         }
 
-        private void PrepareGraphicsPath()
+        private void PrepareItemsGraphicsPath()
         {
             for (int i = 0; i < _items.Count; ++i)
             {
@@ -295,24 +399,53 @@ namespace TestProject
 
                 if (isLast)
                 {
-                    points[0] = new PointF(rect.X + rect.Width - itemRoundWidth, rect.Y);
-                    points[1] = new PointF(rect.X, rect.Y);
-                    points[2] = new PointF(rect.X + _itemTriangleWidth, rect.Y + rect.Height / 2);
-                    points[3] = new PointF(rect.X, rect.Y + rect.Height);
-                    points[4] = new PointF(rect.X + rect.Width - itemRoundWidth, rect.Y + rect.Height);
+                    if (_isVertical)
+                    {
+                        points[0] = new PointF(rect.Right, rect.Bottom - itemRoundWidth);
+                        points[1] = new PointF(rect.Right, rect.Y);
+                        points[2] = new PointF(rect.X + rect.Width / 2, rect.Y + _itemTriangleWidth);
+                        points[3] = new PointF(rect.X, rect.Y);
+                        points[4] = new PointF(rect.X, rect.Bottom - itemRoundWidth);
+                    }
+                    else
+                    {
+                        points[0] = new PointF(rect.Right - itemRoundWidth, rect.Y);
+                        points[1] = new PointF(rect.X, rect.Y);
+                        points[2] = new PointF(rect.X + _itemTriangleWidth, rect.Y + rect.Height / 2);
+                        points[3] = new PointF(rect.X, rect.Bottom);
+                        points[4] = new PointF(rect.Right - itemRoundWidth, rect.Bottom);
+                    }
                 }
                 else
                 {
-                    points[0] = new PointF(rect.X + (isFirst ? itemRoundWidth : 0), rect.Y);
-                    points[1] = new PointF(rect.X + rect.Width - _itemTriangleWidth, rect.Y);
-                    points[2] = new PointF(rect.X + rect.Width, rect.Y + rect.Height / 2);
-                    points[3] = new PointF(rect.X + rect.Width - _itemTriangleWidth, rect.Y + rect.Height);
-                    points[4] = new PointF(rect.X + (isFirst ? itemRoundWidth : 0), rect.Y + rect.Height);
+                    if(_isVertical)
+                    {
+                        points[0] = new PointF(rect.Right, rect.Y + (isFirst ? itemRoundWidth : 0));
+                        points[1] = new PointF(rect.Right, rect.Bottom - _itemTriangleWidth);
+                        points[2] = new PointF(rect.X + rect.Width / 2, rect.Y + rect.Height);
+                        points[3] = new PointF(rect.X, rect.Bottom - _itemTriangleWidth);
+                        points[4] = new PointF(rect.X, rect.Y + (isFirst ? itemRoundWidth : 0));
+                    }
+                    else
+                    {
+                        points[0] = new PointF(rect.X + (isFirst ? itemRoundWidth : 0), rect.Y);
+                        points[1] = new PointF(rect.Right - _itemTriangleWidth, rect.Y);
+                        points[2] = new PointF(rect.Right, rect.Y + rect.Height / 2);
+                        points[3] = new PointF(rect.Right - _itemTriangleWidth, rect.Bottom);
+                        points[4] = new PointF(rect.X + (isFirst ? itemRoundWidth : 0), rect.Bottom);
+                    }
                 }
 
                 if (isFirst == false && isLast == false)
                 {
-                    points[5] = new PointF(rect.X + _itemTriangleWidth, rect.Y + rect.Height / 2);
+                    if (_isVertical)
+                    {
+                        points[5] = new PointF(rect.X + rect.Width / 2, rect.Y + _itemTriangleWidth);
+                    }
+                    else
+                    {
+                        points[5] = new PointF(rect.X + _itemTriangleWidth, rect.Y + rect.Height / 2);
+                    }
                 }
 
                 grPath.AddLines(points);
@@ -320,8 +453,17 @@ namespace TestProject
                 if ((isFirst || isLast) && _itemRoundingShape == ItemRoundingShapeType.Circular)
                 {
                     int roundRectWidth = 2 * _itemRoundWidth;
-                    RectangleF r = new RectangleF(rect.X + (isLast ? rect.Width - roundRectWidth : 0), rect.Y, roundRectWidth, rect.Height);
-                    grPath.AddArc(r, 90, (isLast ? -1 : 1) * 180);
+
+                    if (_isVertical)
+                    {
+                        RectangleF r = new RectangleF(rect.X, (isLast ? rect.Bottom - roundRectWidth : rect.Y), rect.Width, roundRectWidth);
+                        grPath.AddArc(r, 180, (isLast ? -1 : 1) * 180);
+                    }
+                    else
+                    {
+                        RectangleF r = new RectangleF((isLast ? rect.Right - roundRectWidth : rect.X), rect.Y, roundRectWidth, rect.Height);
+                        grPath.AddArc(r, 90, (isLast ? -1 : 1) * 180);
+                    }
                 }
 
                 grPath.CloseFigure();
@@ -330,46 +472,34 @@ namespace TestProject
                 {
                     pItem.GrPath.Dispose();
                 }
+
                 pItem.GrPath = grPath;
             }
         }
 
-        private void DrawProcessItem(Graphics gr, IGProcessItemInner item)
+        public void ConfigureGraphics(Graphics gr)
         {
-            Brush brush;
+            gr.SmoothingMode = SmoothingMode.AntiAlias;
+            gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
+        }
 
-            if (item.BackColorTo == Color.Empty)
+        private void DrawBackground(Graphics gr)
+        {
+            if (BackgroundImage != null)
             {
-                brush = new SolidBrush(item.BackColorFrom);
+                return;
+            }
+
+            if (_backColorTo == Color.Empty)
+            {
+                gr.Clear(BackColor);
             }
             else
             {
-                brush = new LinearGradientBrush(item.BoundRect, item.BackColorFrom, item.BackColorTo, item.BackColorGradientMode);
+                LinearGradientBrush brush = new LinearGradientBrush(ClientRectangle, BackColor, _backColorTo, _backColorGradientMode);
+                gr.FillRectangle(brush, ClientRectangle);
             }
-
-            gr.FillPath(brush, item.GrPath);
-
-            if (item.LineColor != Color.Empty)
-            {
-                gr.DrawPath(new Pen(item.LineColor, item.LineWidth), item.GrPath);
-            }
-
-            if (item.Icon != null)
-            {
-                gr.DrawImage(item.Icon, new PointF(item.BoundRect.X + _itemTriangleWidth, item.BoundRect.Y + (item.BoundRect.Height - item.Icon.Height) / 2));
-            }
-
-            StringFormat sf = new StringFormat();
-            sf.LineAlignment = StringAlignment.Center;
-            sf.Alignment = item.TextAlignment; ;
-            RectangleF textRect = item.BoundRect;
-            textRect.X += (_itemTriangleWidth + 3) + (item.Icon != null ? item.Icon.Width : 0);
-            textRect.Width -= (2 * _itemTriangleWidth + 3);
-            textRect.Y += 1;
-
-            gr.DrawString(item.Text, item.TextFont, new SolidBrush(item.TextColor), textRect, sf);
         }
-
         private void Draw(Graphics gr)
         {
             if (_items.Count == 0)
@@ -377,25 +507,47 @@ namespace TestProject
                 return;
             }
 
-            gr.SmoothingMode = SmoothingMode.AntiAlias;
-            gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-            if (BackgroundImage == null)
-            {
-                if (_backColorTo == Color.Empty)
-                {
-                    gr.Clear(BackColor);
-                }
-                else
-                {
-                    LinearGradientBrush brush = new LinearGradientBrush(ClientRectangle, BackColor, _backColorTo, _backColorGradientMode);
-                    gr.FillRectangle(brush, ClientRectangle);
-                }
-            }
+            ConfigureGraphics(gr);
+            DrawBackground(gr);
 
             foreach (IGProcessItemInner item in _items)
             {
-                DrawProcessItem(gr, item);
+                item.Draw(gr);
+            }
+
+            if (_items.Count > 0 && _isVertical)
+            {
+                IGProcessItemInner it = _items[1];
+                PointF[] p = new PointF[8];
+                RectangleF rect = it.BoundRect;
+                p[0] = new PointF(rect.Right + 3, rect.Top + 3);
+                p[1] = new PointF(ClientRectangle.Right - 5, rect.Top - 5);
+                p[2] = new PointF(rect.Right + 3 * (ClientRectangle.Right - rect.Right) / 4, 3 * ClientRectangle.Top + (rect.Top - ClientRectangle.Top) / 4);
+                p[3] = new PointF(ClientRectangle.Right, ClientRectangle.Top);
+                p[4] = new PointF(ClientRectangle.Right, ClientRectangle.Bottom);
+                p[5] = new PointF(rect.Right + (ClientRectangle.Right - rect.Right) / 2, ClientRectangle.Bottom - (ClientRectangle.Bottom - rect.Bottom) / 2);
+                p[6] = new PointF(ClientRectangle.Right - 5, rect.Bottom + 5);
+                p[7] = new PointF(rect.Right + 3, rect.Bottom-_itemTriangleWidth-3);
+                
+                GraphicsPath path = new GraphicsPath();
+                path.AddBezier(p[0], p[1], p[2], p[3]);
+                path.AddBezier(p[4], p[5], p[6], p[7]);
+                path.CloseFigure();
+
+                LinearGradientBrush gBrush = new LinearGradientBrush(new RectangleF(rect.Right, ClientRectangle.Top, ClientRectangle.Right - rect.Right, ClientRectangle.Height),
+                    
+                    Color.FromArgb(91, 155, 213),
+                    Color.White,
+                    //Color.LightGray,
+                    LinearGradientMode.ForwardDiagonal);
+                //gr.FillPath(new SolidBrush(Color.FromArgb(91, 155, 213)), path);
+                gr.FillPath(gBrush, path);
+                path.Dispose();
+
+                //foreach(PointF po in p)
+                //{
+                //    gr.DrawEllipse(Pens.Red, new RectangleF(po, new Size(6, 6)));
+                //}
             }
         }
 
@@ -414,15 +566,10 @@ namespace TestProject
             Draw(e.Graphics);
         }
 
-        public int TotalW()
-        {
-            return GetItemsTotalWidth();
-        }
-
         private void ShrinkItems()
         {
             int totalWidth = GetItemsTotalWidth() + (_itemAlignment != StringAlignment.Center ? DefaultNearFarEmptyWidth : 0);
-            int diff = totalWidth - Width;
+            int diff = totalWidth - (_isVertical ? Height : Width);
 
             if (diff <= 0)
             {
@@ -481,9 +628,9 @@ namespace TestProject
             Font font = new Font("Tahoma", 8f);
             Color fromColor = Color.FromArgb(224, 237, 248);
             Color toColor = Color.FromArgb(94, 158, 219);
-            AddItem("Dosya Hazırlık", 0, font, Color.Black, StringAlignment.Center, fromColor, toColor, LinearGradientMode.Horizontal, Color.DarkGray, 1.0f, null);
-            AddItem("   ...   ", 0, font, Color.Red, StringAlignment.Center, fromColor, toColor, LinearGradientMode.BackwardDiagonal, Color.DarkGray, 1.0f, null);
-            AddItem("Analiz Kontrol", 0, font, Color.White, StringAlignment.Center, fromColor, toColor, LinearGradientMode.ForwardDiagonal, Color.DarkGray, 1.0f, null);
+            AddItem("Process Item1", 0, font, Color.Black, StringAlignment.Center, 0, fromColor, toColor, LinearGradientMode.Horizontal, Color.DarkGray, 1.0f, null);
+            AddItem("Process Item...", 0, font, Color.Red, StringAlignment.Center, 0, fromColor, toColor, LinearGradientMode.BackwardDiagonal, Color.DarkGray, 1.0f, null);
+            AddItem("Process ItemN", 0, font, Color.White, StringAlignment.Center, 0, fromColor, toColor, LinearGradientMode.ForwardDiagonal, Color.DarkGray, 1.0f, null);
             PrepareItems();
         }
     }
