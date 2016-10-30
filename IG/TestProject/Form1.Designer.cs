@@ -124,7 +124,7 @@
             // 
             // panel2
             // 
-            this.panel2.BackColor = System.Drawing.Color.White;
+            this.panel2.BackColor = System.Drawing.SystemColors.Control;
             this.panel2.Controls.Add(this.button1);
             this.panel2.Controls.Add(this.button4);
             this.panel2.Controls.Add(this.button2);
@@ -132,9 +132,9 @@
             this.panel2.Controls.Add(this.button3);
             this.panel2.Controls.Add(this.textBox1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(218, 186);
+            this.panel2.Location = new System.Drawing.Point(157, 186);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1170, 903);
+            this.panel2.Size = new System.Drawing.Size(1231, 903);
             this.panel2.TabIndex = 13;
             // 
             // igProcess2
@@ -154,7 +154,7 @@
             this.igProcess2.Location = new System.Drawing.Point(0, 186);
             this.igProcess2.Name = "igProcess2";
             this.igProcess2.Shrinker = true;
-            this.igProcess2.Size = new System.Drawing.Size(218, 903);
+            this.igProcess2.Size = new System.Drawing.Size(157, 903);
             this.igProcess2.TabIndex = 10;
             // 
             // igProcess1

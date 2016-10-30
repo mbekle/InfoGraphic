@@ -515,19 +515,20 @@ namespace TestProject
                 item.Draw(gr);
             }
 
+            /*
             if (_items.Count > 0 && _isVertical)
             {
                 IGProcessItemInner it = _items[1];
                 PointF[] p = new PointF[8];
                 RectangleF rect = it.BoundRect;
-                p[0] = new PointF(rect.Right + 3, rect.Top + 3);
+                p[0] = new PointF(rect.Right + 1, rect.Top);
                 p[1] = new PointF(ClientRectangle.Right - 5, rect.Top - 5);
                 p[2] = new PointF(rect.Right + 3 * (ClientRectangle.Right - rect.Right) / 4, 3 * ClientRectangle.Top + (rect.Top - ClientRectangle.Top) / 4);
                 p[3] = new PointF(ClientRectangle.Right, ClientRectangle.Top);
                 p[4] = new PointF(ClientRectangle.Right, ClientRectangle.Bottom);
-                p[5] = new PointF(rect.Right + (ClientRectangle.Right - rect.Right) / 2, ClientRectangle.Bottom - (ClientRectangle.Bottom - rect.Bottom) / 2);
+                p[5] = new PointF(rect.Right + 3 * (ClientRectangle.Right - rect.Right) / 4, ClientRectangle.Bottom - 3 * (ClientRectangle.Bottom - rect.Bottom) / 4);
                 p[6] = new PointF(ClientRectangle.Right - 5, rect.Bottom + 5);
-                p[7] = new PointF(rect.Right + 3, rect.Bottom-_itemTriangleWidth-3);
+                p[7] = new PointF(rect.Right + 1, rect.Bottom - _itemTriangleWidth);
                 
                 GraphicsPath path = new GraphicsPath();
                 path.AddBezier(p[0], p[1], p[2], p[3]);
@@ -535,11 +536,12 @@ namespace TestProject
                 path.CloseFigure();
 
                 LinearGradientBrush gBrush = new LinearGradientBrush(new RectangleF(rect.Right, ClientRectangle.Top, ClientRectangle.Right - rect.Right, ClientRectangle.Height),
-                    
-                    Color.FromArgb(91, 155, 213),
                     Color.White,
+                    //Color.FromArgb(91, 155, 213),
+                    Color.FromArgb(133, 181, 234),
+
                     //Color.LightGray,
-                    LinearGradientMode.ForwardDiagonal);
+                LinearGradientMode.Horizontal);
                 //gr.FillPath(new SolidBrush(Color.FromArgb(91, 155, 213)), path);
                 gr.FillPath(gBrush, path);
                 path.Dispose();
@@ -549,6 +551,7 @@ namespace TestProject
                 //    gr.DrawEllipse(Pens.Red, new RectangleF(po, new Size(6, 6)));
                 //}
             }
+            */
         }
 
         protected override void OnPaint(PaintEventArgs e)
