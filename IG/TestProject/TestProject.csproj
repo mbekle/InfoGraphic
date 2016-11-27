@@ -55,8 +55,8 @@
     <Compile Include="IGProcess.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="IGProcess.Designer.cs">
-      <DependentUpon>IGProcess.cs</DependentUpon>
+    <Compile Include="IGRating.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

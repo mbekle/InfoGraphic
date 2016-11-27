@@ -39,6 +39,11 @@
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.button4 = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.button5 = new System.Windows.Forms.Button();
+            this.igRating4 = new TestProject.IGRating();
+            this.igRating3 = new TestProject.IGRating();
+            this.igRating2 = new TestProject.IGRating();
+            this.igRating1 = new TestProject.IGRating();
             this.igProcess2 = new TestProject.IGProcess();
             this.igProcess1 = new TestProject.IGProcess();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
@@ -125,6 +130,11 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.SystemColors.Control;
+            this.panel2.Controls.Add(this.igRating4);
+            this.panel2.Controls.Add(this.igRating3);
+            this.panel2.Controls.Add(this.igRating2);
+            this.panel2.Controls.Add(this.igRating1);
+            this.panel2.Controls.Add(this.button5);
             this.panel2.Controls.Add(this.button1);
             this.panel2.Controls.Add(this.button4);
             this.panel2.Controls.Add(this.button2);
@@ -134,8 +144,174 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(157, 186);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1231, 903);
+            this.panel2.Size = new System.Drawing.Size(1231, 1035);
             this.panel2.TabIndex = 13;
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(995, 317);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(101, 64);
+            this.button5.TabIndex = 14;
+            this.button5.Text = "button5";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // igRating4
+            // 
+            this.igRating4.ActiveNoteBarBrush.Angle = 0F;
+            this.igRating4.ActiveNoteBarBrush.FromColor = System.Drawing.Color.DodgerBlue;
+            this.igRating4.ActiveNoteBarBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.igRating4.ActiveNoteBarBrush.ToColor = System.Drawing.Color.Empty;
+            this.igRating4.ActiveNoteBarFrameColor = System.Drawing.Color.Empty;
+            this.igRating4.BackGroundBrush.Angle = 0F;
+            this.igRating4.BackGroundBrush.FromColor = System.Drawing.Color.White;
+            this.igRating4.BackGroundBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.igRating4.BackGroundBrush.ToColor = System.Drawing.Color.Empty;
+            this.igRating4.CurrentNoteName = "B1";
+            this.igRating4.Font = new System.Drawing.Font("Tahoma", 8F);
+            this.igRating4.FrameColor = System.Drawing.Color.DarkGray;
+            this.igRating4.HerePointerColor = System.Drawing.Color.Green;
+            this.igRating4.InactiveNoteBarBrush.Angle = 0F;
+            this.igRating4.InactiveNoteBarBrush.FromColor = System.Drawing.Color.Gainsboro;
+            this.igRating4.InactiveNoteBarBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.igRating4.InactiveNoteBarBrush.ToColor = System.Drawing.Color.Empty;
+            this.igRating4.InactiveNoteBarFrameColor = System.Drawing.Color.Empty;
+            this.igRating4.LeftIndent = ((short)(3));
+            this.igRating4.Location = new System.Drawing.Point(803, 347);
+            this.igRating4.Name = "igRating4";
+            this.igRating4.NoteBarShape = TestProject.IGRating.NoteBarShapeType.Rectangle;
+            this.igRating4.NoteBarWidth = ((short)(25));
+            this.igRating4.NoteBarWidthAccordingToRowHeight = false;
+            this.igRating4.NoteNameAlignment = System.Drawing.StringAlignment.Near;
+            this.igRating4.RightIndent = ((short)(3));
+            this.igRating4.RowLineBrush.Angle = 0F;
+            this.igRating4.RowLineBrush.FromColor = System.Drawing.Color.DarkGray;
+            this.igRating4.RowLineBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.igRating4.RowLineBrush.ToColor = System.Drawing.Color.Empty;
+            this.igRating4.RowLineWidth = ((short)(1));
+            this.igRating4.ShowHerePointer = true;
+            this.igRating4.ShowNoteName = true;
+            this.igRating4.Size = new System.Drawing.Size(226, 638);
+            this.igRating4.TabIndex = 17;
+            this.igRating4.Text = "ıgRating1";
+            // 
+            // igRating3
+            // 
+            this.igRating3.ActiveNoteBarBrush.Angle = 0F;
+            this.igRating3.ActiveNoteBarBrush.FromColor = System.Drawing.Color.DodgerBlue;
+            this.igRating3.ActiveNoteBarBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.igRating3.ActiveNoteBarBrush.ToColor = System.Drawing.Color.Empty;
+            this.igRating3.ActiveNoteBarFrameColor = System.Drawing.Color.White;
+            this.igRating3.BackGroundBrush.Angle = 0F;
+            this.igRating3.BackGroundBrush.FromColor = System.Drawing.Color.White;
+            this.igRating3.BackGroundBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.igRating3.BackGroundBrush.ToColor = System.Drawing.Color.Empty;
+            this.igRating3.CurrentNoteName = "B-";
+            this.igRating3.Font = new System.Drawing.Font("Tahoma", 8F);
+            this.igRating3.FrameColor = System.Drawing.Color.DarkGray;
+            this.igRating3.HerePointerColor = System.Drawing.Color.Green;
+            this.igRating3.InactiveNoteBarBrush.Angle = 0F;
+            this.igRating3.InactiveNoteBarBrush.FromColor = System.Drawing.Color.Gainsboro;
+            this.igRating3.InactiveNoteBarBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.igRating3.InactiveNoteBarBrush.ToColor = System.Drawing.Color.Empty;
+            this.igRating3.InactiveNoteBarFrameColor = System.Drawing.Color.White;
+            this.igRating3.LeftIndent = ((short)(3));
+            this.igRating3.Location = new System.Drawing.Point(545, 356);
+            this.igRating3.Name = "igRating3";
+            this.igRating3.NoteBarShape = TestProject.IGRating.NoteBarShapeType.Rectangle;
+            this.igRating3.NoteBarWidth = ((short)(25));
+            this.igRating3.NoteBarWidthAccordingToRowHeight = false;
+            this.igRating3.NoteNameAlignment = System.Drawing.StringAlignment.Near;
+            this.igRating3.RightIndent = ((short)(3));
+            this.igRating3.RowLineBrush.Angle = 0F;
+            this.igRating3.RowLineBrush.FromColor = System.Drawing.Color.DarkGray;
+            this.igRating3.RowLineBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.igRating3.RowLineBrush.ToColor = System.Drawing.Color.Empty;
+            this.igRating3.RowLineWidth = ((short)(1));
+            this.igRating3.ShowHerePointer = true;
+            this.igRating3.ShowNoteName = true;
+            this.igRating3.Size = new System.Drawing.Size(185, 418);
+            this.igRating3.TabIndex = 16;
+            this.igRating3.Text = "ıgRating3";
+            // 
+            // igRating2
+            // 
+            this.igRating2.ActiveNoteBarBrush.Angle = 0F;
+            this.igRating2.ActiveNoteBarBrush.FromColor = System.Drawing.Color.DodgerBlue;
+            this.igRating2.ActiveNoteBarBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.igRating2.ActiveNoteBarBrush.ToColor = System.Drawing.Color.Empty;
+            this.igRating2.ActiveNoteBarFrameColor = System.Drawing.Color.Empty;
+            this.igRating2.BackGroundBrush.Angle = 0F;
+            this.igRating2.BackGroundBrush.FromColor = System.Drawing.Color.White;
+            this.igRating2.BackGroundBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.igRating2.BackGroundBrush.ToColor = System.Drawing.Color.Empty;
+            this.igRating2.CurrentNoteName = "B2";
+            this.igRating2.Font = new System.Drawing.Font("Tahoma", 7F);
+            this.igRating2.FrameColor = System.Drawing.Color.Empty;
+            this.igRating2.HerePointerColor = System.Drawing.Color.Green;
+            this.igRating2.InactiveNoteBarBrush.Angle = 0F;
+            this.igRating2.InactiveNoteBarBrush.FromColor = System.Drawing.Color.Gainsboro;
+            this.igRating2.InactiveNoteBarBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.igRating2.InactiveNoteBarBrush.ToColor = System.Drawing.Color.Empty;
+            this.igRating2.InactiveNoteBarFrameColor = System.Drawing.Color.Empty;
+            this.igRating2.LeftIndent = ((short)(3));
+            this.igRating2.Location = new System.Drawing.Point(252, 356);
+            this.igRating2.Name = "igRating2";
+            this.igRating2.NoteBarShape = TestProject.IGRating.NoteBarShapeType.Rectangle;
+            this.igRating2.NoteBarWidth = ((short)(25));
+            this.igRating2.NoteBarWidthAccordingToRowHeight = false;
+            this.igRating2.NoteNameAlignment = System.Drawing.StringAlignment.Near;
+            this.igRating2.RightIndent = ((short)(30));
+            this.igRating2.RowLineBrush.Angle = 0F;
+            this.igRating2.RowLineBrush.FromColor = System.Drawing.Color.LightGray;
+            this.igRating2.RowLineBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.ForwardDiagonal;
+            this.igRating2.RowLineBrush.ToColor = System.Drawing.Color.Empty;
+            this.igRating2.RowLineWidth = ((short)(1));
+            this.igRating2.ShowHerePointer = true;
+            this.igRating2.ShowNoteName = true;
+            this.igRating2.Size = new System.Drawing.Size(149, 418);
+            this.igRating2.TabIndex = 15;
+            this.igRating2.Text = "ıgRating1";
+            // 
+            // igRating1
+            // 
+            this.igRating1.ActiveNoteBarBrush.Angle = 0F;
+            this.igRating1.ActiveNoteBarBrush.FromColor = System.Drawing.Color.DodgerBlue;
+            this.igRating1.ActiveNoteBarBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.igRating1.ActiveNoteBarBrush.ToColor = System.Drawing.Color.Empty;
+            this.igRating1.ActiveNoteBarFrameColor = System.Drawing.Color.Empty;
+            this.igRating1.BackGroundBrush.Angle = 0F;
+            this.igRating1.BackGroundBrush.FromColor = System.Drawing.Color.White;
+            this.igRating1.BackGroundBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.igRating1.BackGroundBrush.ToColor = System.Drawing.Color.Empty;
+            this.igRating1.CurrentNoteName = "BB-";
+            this.igRating1.Font = new System.Drawing.Font("Tahoma", 7F);
+            this.igRating1.FrameColor = System.Drawing.Color.Empty;
+            this.igRating1.HerePointerColor = System.Drawing.Color.Green;
+            this.igRating1.InactiveNoteBarBrush.Angle = 0F;
+            this.igRating1.InactiveNoteBarBrush.FromColor = System.Drawing.Color.Gainsboro;
+            this.igRating1.InactiveNoteBarBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.igRating1.InactiveNoteBarBrush.ToColor = System.Drawing.Color.Empty;
+            this.igRating1.InactiveNoteBarFrameColor = System.Drawing.Color.Empty;
+            this.igRating1.LeftIndent = ((short)(3));
+            this.igRating1.Location = new System.Drawing.Point(400, 356);
+            this.igRating1.Name = "igRating1";
+            this.igRating1.NoteBarShape = TestProject.IGRating.NoteBarShapeType.Rectangle;
+            this.igRating1.NoteBarWidth = ((short)(25));
+            this.igRating1.NoteBarWidthAccordingToRowHeight = false;
+            this.igRating1.NoteNameAlignment = System.Drawing.StringAlignment.Near;
+            this.igRating1.RightIndent = ((short)(20));
+            this.igRating1.RowLineBrush.Angle = 0F;
+            this.igRating1.RowLineBrush.FromColor = System.Drawing.Color.LightGray;
+            this.igRating1.RowLineBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.ForwardDiagonal;
+            this.igRating1.RowLineBrush.ToColor = System.Drawing.Color.Empty;
+            this.igRating1.RowLineWidth = ((short)(1));
+            this.igRating1.ShowHerePointer = true;
+            this.igRating1.ShowNoteName = false;
+            this.igRating1.Size = new System.Drawing.Size(75, 418);
+            this.igRating1.TabIndex = 15;
+            this.igRating1.Text = "ıgRating1";
             // 
             // igProcess2
             // 
@@ -154,7 +330,7 @@
             this.igProcess2.Location = new System.Drawing.Point(0, 186);
             this.igProcess2.Name = "igProcess2";
             this.igProcess2.Shrinker = true;
-            this.igProcess2.Size = new System.Drawing.Size(157, 903);
+            this.igProcess2.Size = new System.Drawing.Size(157, 1035);
             this.igProcess2.TabIndex = 10;
             // 
             // igProcess1
@@ -181,7 +357,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1388, 1089);
+            this.ClientSize = new System.Drawing.Size(1388, 1221);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.igProcess2);
             this.Controls.Add(this.panel1);
@@ -208,5 +384,10 @@
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Button button5;
+        private IGRating igRating1;
+        private IGRating igRating2;
+        private IGRating igRating3;
+        private IGRating igRating4;
     }
 }

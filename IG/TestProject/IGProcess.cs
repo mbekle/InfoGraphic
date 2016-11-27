@@ -261,11 +261,8 @@ namespace TestProject
             }
         }
 
-
         public IGProcess()
         {
-            InitializeComponent();
-
             DoubleBuffered = true;
             SetStyle(ControlStyles.SupportsTransparentBackColor |
                      ControlStyles.DoubleBuffer |
@@ -500,6 +497,7 @@ namespace TestProject
                 gr.FillRectangle(brush, ClientRectangle);
             }
         }
+
         private void Draw(Graphics gr)
         {
             if (_items.Count == 0)

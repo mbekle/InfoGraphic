@@ -39,6 +39,11 @@ namespace TestProject
             igProcess2.AddItem("Kesinleştirildi", 0, font2, Color.White, StringAlignment.Center, 0,  fromColor2, toColor2, LinearGradientMode.Vertical, Color.Black, 1.0f, null);
             igProcess2.PrepareItems();
 
+
+            igRating1.AddDefaultRatingNotes();
+            igRating2.AddDefaultRatingNotes();
+            igRating3.AddDefaultRatingNotes();
+            igRating4.AddDefaultRatingNotes();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -89,6 +94,12 @@ namespace TestProject
         {
             igProcess2.Items[0].TextAlignment = (StringAlignment)(((int)igProcess2.Items[0].TextAlignment + 1) % 3);
             igProcess2.Items[0].Refresh();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            //ıgRating1.BackGroundBrush.FromColor = Color.Green;
+            igRating1.RowLineWidth = 0;
         }
     }
 }
