@@ -26,7 +26,7 @@ namespace TestProject
 
         public class IGProcessItem
         {
-            public int Width { get; }
+            public int Width { get; set; }
             public string Text { get; set; }
             public Font TextFont { get; set; }
             public Color TextColor { get; set; }

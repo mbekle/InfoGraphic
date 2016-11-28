@@ -41,9 +41,9 @@ namespace TestProject
 
 
             igRating1.AddDefaultRatingNotes();
-            igRating2.AddDefaultRatingNotes();
-            igRating3.AddDefaultRatingNotes();
-            igRating4.AddDefaultRatingNotes();
+            //igRating2.AddDefaultRatingNotes();
+            //igRating3.AddDefaultRatingNotes();
+            //igRating4.AddDefaultRatingNotes();
         }
 
         private void button1_Click(object sender, EventArgs e)

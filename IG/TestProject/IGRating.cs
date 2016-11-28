@@ -85,7 +85,10 @@ namespace TestProject
 
             protected void OnChanged(string propertyName)
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                if(PropertyChanged != null)
+                {
+                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                }
             }
 
             public Brush GetBrush(Rectangle rect)
@@ -132,15 +135,20 @@ namespace TestProject
         private bool _showNoteName = true;
         private bool _showNoteValue = false;
         private string _currentNoteName = string.Empty;
+        private float _currentNoteValue = 0.0f;
         private Color _herePointerColor = Color.Green;
         private bool _showHerePointer = true;
         private bool _noteBarWidthAccordingToRowHeight = false;
-        
+        private string _cutOffNoteName = string.Empty;
+        private float _cutOffNoteValue = 0.0f;
+        private BrushInfo _cutOffNoteBarBrush = new BrushInfo(Color.Black, Color.Empty, LinearGradientMode.Horizontal, 0);
+        private Color _cutOffNoteBarFrameColor = Color.Empty;
+        private string _calculatedNoteName = string.Empty;
+        private float _calculatedNoteValue = 0.0f;
+        private Color _calculatedNoteColor = Color.White;
         
         // to do:
-        // private string _cutOffNoteName = string.Empty;
         // bar shape roundrectangle
-        // show note value
 
         #region Published Properties
         [Browsable(false)]
@@ -316,12 +324,18 @@ namespace TestProject
             set { _showNoteValue = value; Invalidate(); }
         }
 
-        [Description("Rating notu"),
-         Category("RatingNoteText")]
+        [Description("Rating notu")]
         public string CurrentNoteName
         {
             get { return _currentNoteName; }
             set { _currentNoteName = value; Invalidate(); }
+        }
+
+        [Description("Rating notu")]
+        public float CurrentNoteValue
+        {
+            get { return _currentNoteValue; }
+            set { _currentNoteValue = value; Invalidate(); }
         }
 
         [Description("Rating notu barı genişliği ve satır yüksekliğini dikkate alarak eşit bar çizer"),
@@ -345,6 +359,73 @@ namespace TestProject
             get { return _showHerePointer; }
             set { _showHerePointer = value; Invalidate(); }
         }
+
+        [Description("Rating notu için Cut off not ismi"),
+        Category("CutOff")]
+        public string CutOffNoteName
+        {
+            get { return _cutOffNoteName; }
+            set { _cutOffNoteName = value; Invalidate(); }
+        }
+
+        [Description("Rating notu için Cut off not değeri"),
+        Category("CutOff")]
+        public float CutOffNoteValue
+        {
+            get { return _cutOffNoteValue; }
+            set { _cutOffNoteValue = value; Invalidate(); }
+        }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content),
+         Description("Rating notu barının cut off değeri boyama stili ve renkleri"),
+         Category("CutOff")]
+        public BrushInfo CutOffNoteBarBrush
+        {
+            get { return _cutOffNoteBarBrush; }
+            set
+            {
+                if (value == null)
+                {
+                    return;
+                }
+
+                _cutOffNoteBarBrush = value;
+                Invalidate();
+            }
+        }
+
+        [Description("Rating notu barının frame rengi"),
+         Category("CutOff")]
+        public Color CutOffNoteBarFrameColor
+        {
+            get { return _cutOffNoteBarFrameColor; }
+            set { _cutOffNoteBarFrameColor = value; Invalidate(); }
+        }
+
+        [Description("Rating notunun kullanıcı tarafından ezilmeden önceki halinin ismini belirtir"),
+         Category("CalculatedNote")]
+        public string CalculatedNoteName
+        {
+            get { return _calculatedNoteName; }
+            set { _calculatedNoteName = value; Invalidate(); }
+        }
+
+        [Description("Rating notunun kullanıcı tarafından ezilmeden önceki halinin değerini belirtir"),
+         Category("CalculatedNote")]
+        public float CalculatedNoteValue
+        {
+            get { return _calculatedNoteValue; }
+            set { _calculatedNoteValue = value; Invalidate(); }
+        }
+
+        [Description("Rating notunun kullanıcı tarafından ezilmeden önceki halini gösteren işaretçi rengi"),
+         Category("CalculatedNote")]
+        public Color CalculatedNoteColor
+        {
+            get { return _calculatedNoteColor; }
+            set { _calculatedNoteColor = value; Invalidate(); }
+        }
+        
         #endregion
 
         public IGRating()
@@ -359,6 +440,7 @@ namespace TestProject
             _rowLineBrush.PropertyChanged += PropertyChanged;
             _inactiveNoteBarBrush.PropertyChanged += PropertyChanged;
             _activeNoteBarBrush.PropertyChanged += PropertyChanged;
+            _cutOffNoteBarBrush.PropertyChanged += PropertyChanged;
             Font = new Font("Tahoma", 8f);
         }
 
@@ -534,6 +616,13 @@ namespace TestProject
             gr.DrawString(noteNameValueStr, Font, new SolidBrush(ForeColor), rect, sf);
         }
 
+        private bool IsRatingNote(string searchName, float searchValue, RatingNote note)
+        {
+            return (searchName != string.Empty && note.Name == searchName)
+                   ||
+                   (searchValue != 0.0 && searchValue >= note.FromValue && searchValue <= note.ToValue);
+        }
+
         private void DrawBackGround(Graphics gr)
         {
             if (BackgroundImage != null)
@@ -553,6 +642,8 @@ namespace TestProject
 
             bool foundCurrentNote = false;
             int currentNoteIdx = -1;
+            bool foundCutOff = false;
+            int cutOffNoteIdx = -1;
             short tmpNoteBarWidth = (_noteBarWidthAccordingToRowHeight ? (short)(_rowHeight - 2) : _noteBarWidth);
 
             for (int i = 0; i < _ratings.Count; ++i)
@@ -571,13 +662,23 @@ namespace TestProject
                 rect.Width = tmpNoteBarWidth;
                 rect.Inflate(-1, -1);
 
-                if (_currentNoteName != string.Empty && foundCurrentNote == false && _ratings[i].Name == _currentNoteName)
+                if (foundCutOff == false && IsRatingNote(_cutOffNoteName, _cutOffNoteValue, _ratings[i]))
+                {
+                    foundCutOff = true;
+                    cutOffNoteIdx = i;
+                }
+
+                if (foundCurrentNote == false && IsRatingNote(_currentNoteName, _currentNoteValue, _ratings[i]))
                 {
                     foundCurrentNote = true;
                     currentNoteIdx = i;
                 }
 
-                if (foundCurrentNote)
+                if (foundCutOff)
+                {
+                    DrawNoteBar(gr, _cutOffNoteBarBrush, _cutOffNoteBarFrameColor, ref rect);
+                }
+                else if (foundCurrentNote)
                 {
                     DrawNoteBar(gr, _activeNoteBarBrush, _activeNoteBarFrameColor, ref rect);
                 }
@@ -589,6 +690,13 @@ namespace TestProject
                 if (_showHerePointer && i == currentNoteIdx)
                 {
                     DrawHerePointer(gr, rect);
+                }
+
+                if (IsRatingNote(_calculatedNoteName, _calculatedNoteValue, _ratings[i]))
+                {
+                    float radius = 6;
+                    RectangleF calculatedNoteRect = new RectangleF(rect.Left + rect.Width / 2 - radius / 2, rect.Top + rect.Height / 2 - radius / 2, radius, radius);
+                    gr.FillEllipse(new SolidBrush(_calculatedNoteColor), calculatedNoteRect);
                 }
             }
         }
