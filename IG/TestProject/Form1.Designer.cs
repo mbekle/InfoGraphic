@@ -149,7 +149,7 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(995, 317);
+            this.button5.Location = new System.Drawing.Point(1036, 261);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(101, 64);
             this.button5.TabIndex = 14;
@@ -183,7 +183,7 @@
             this.igRating4.NoteBarShape = TestProject.IGRating.NoteBarShapeType.Rectangle;
             this.igRating4.NoteBarWidth = ((short)(25));
             this.igRating4.NoteBarWidthAccordingToRowHeight = false;
-            this.igRating4.NoteNameAlignment = System.Drawing.StringAlignment.Near;
+            this.igRating4.NoteTextAlignment = System.Drawing.StringAlignment.Near;
             this.igRating4.RightIndent = ((short)(3));
             this.igRating4.RowLineBrush.Angle = 0F;
             this.igRating4.RowLineBrush.FromColor = System.Drawing.Color.DarkGray;
@@ -192,6 +192,7 @@
             this.igRating4.RowLineWidth = ((short)(1));
             this.igRating4.ShowHerePointer = true;
             this.igRating4.ShowNoteName = true;
+            this.igRating4.ShowNoteValue = false;
             this.igRating4.Size = new System.Drawing.Size(226, 638);
             this.igRating4.TabIndex = 17;
             this.igRating4.Text = "ıgRating1";
@@ -222,7 +223,7 @@
             this.igRating3.NoteBarShape = TestProject.IGRating.NoteBarShapeType.Rectangle;
             this.igRating3.NoteBarWidth = ((short)(25));
             this.igRating3.NoteBarWidthAccordingToRowHeight = false;
-            this.igRating3.NoteNameAlignment = System.Drawing.StringAlignment.Near;
+            this.igRating3.NoteTextAlignment = System.Drawing.StringAlignment.Near;
             this.igRating3.RightIndent = ((short)(3));
             this.igRating3.RowLineBrush.Angle = 0F;
             this.igRating3.RowLineBrush.FromColor = System.Drawing.Color.DarkGray;
@@ -231,6 +232,7 @@
             this.igRating3.RowLineWidth = ((short)(1));
             this.igRating3.ShowHerePointer = true;
             this.igRating3.ShowNoteName = true;
+            this.igRating3.ShowNoteValue = false;
             this.igRating3.Size = new System.Drawing.Size(185, 418);
             this.igRating3.TabIndex = 16;
             this.igRating3.Text = "ıgRating3";
@@ -261,7 +263,7 @@
             this.igRating2.NoteBarShape = TestProject.IGRating.NoteBarShapeType.Rectangle;
             this.igRating2.NoteBarWidth = ((short)(25));
             this.igRating2.NoteBarWidthAccordingToRowHeight = false;
-            this.igRating2.NoteNameAlignment = System.Drawing.StringAlignment.Near;
+            this.igRating2.NoteTextAlignment = System.Drawing.StringAlignment.Near;
             this.igRating2.RightIndent = ((short)(30));
             this.igRating2.RowLineBrush.Angle = 0F;
             this.igRating2.RowLineBrush.FromColor = System.Drawing.Color.LightGray;
@@ -270,6 +272,7 @@
             this.igRating2.RowLineWidth = ((short)(1));
             this.igRating2.ShowHerePointer = true;
             this.igRating2.ShowNoteName = true;
+            this.igRating2.ShowNoteValue = false;
             this.igRating2.Size = new System.Drawing.Size(149, 418);
             this.igRating2.TabIndex = 15;
             this.igRating2.Text = "ıgRating1";
@@ -300,7 +303,7 @@
             this.igRating1.NoteBarShape = TestProject.IGRating.NoteBarShapeType.Rectangle;
             this.igRating1.NoteBarWidth = ((short)(25));
             this.igRating1.NoteBarWidthAccordingToRowHeight = false;
-            this.igRating1.NoteNameAlignment = System.Drawing.StringAlignment.Near;
+            this.igRating1.NoteTextAlignment = System.Drawing.StringAlignment.Near;
             this.igRating1.RightIndent = ((short)(20));
             this.igRating1.RowLineBrush.Angle = 0F;
             this.igRating1.RowLineBrush.FromColor = System.Drawing.Color.LightGray;
@@ -309,6 +312,7 @@
             this.igRating1.RowLineWidth = ((short)(1));
             this.igRating1.ShowHerePointer = true;
             this.igRating1.ShowNoteName = false;
+            this.igRating1.ShowNoteValue = false;
             this.igRating1.Size = new System.Drawing.Size(75, 418);
             this.igRating1.TabIndex = 15;
             this.igRating1.Text = "ıgRating1";

@@ -128,8 +128,9 @@ namespace TestProject
         private Color _inactiveNoteBarFrameColor = Color.Empty;
         private BrushInfo _activeNoteBarBrush = new BrushInfo(Color.DodgerBlue, Color.Empty, LinearGradientMode.Horizontal, 0);
         private Color _activeNoteBarFrameColor = Color.Empty;
-        private StringAlignment _noteNameAlignment = StringAlignment.Near;
+        private StringAlignment _noteTextAlignment = StringAlignment.Near;
         private bool _showNoteName = true;
+        private bool _showNoteValue = false;
         private string _currentNoteName = string.Empty;
         private Color _herePointerColor = Color.Green;
         private bool _showHerePointer = true;
@@ -139,6 +140,7 @@ namespace TestProject
         // to do:
         // private string _cutOffNoteName = string.Empty;
         // bar shape roundrectangle
+        // show note value
 
         #region Published Properties
         [Browsable(false)]
@@ -291,23 +293,31 @@ namespace TestProject
         }
 
         [Description("Rating notu yazısının hizalanması"),
-         Category("RatingNoteName")]
-        public StringAlignment NoteNameAlignment
+         Category("RatingNoteText")]
+        public StringAlignment NoteTextAlignment
         {
-            get { return _noteNameAlignment; }
-            set { _noteNameAlignment = value; Invalidate(); }
+            get { return _noteTextAlignment; }
+            set { _noteTextAlignment = value; Invalidate(); }
         }
 
-        [Description("Rating notu yazısının gösterilp gösterilmeyeceğini belirtir"),
-         Category("RatingNoteName")]
+        [Description("Rating notu yazısının gösterilip gösterilmeyeceğini belirtir"),
+         Category("RatingNoteText")]
         public bool ShowNoteName
         {
             get { return _showNoteName; }
             set { _showNoteName = value; Invalidate(); }
         }
 
+        [Description("Rating notu değerlerinin gösterilip gösterilmeyeceğini belirtir"),
+         Category("RatingNoteText")]
+        public bool ShowNoteValue
+        {
+            get { return _showNoteValue; }
+            set { _showNoteValue = value; Invalidate(); }
+        }
+
         [Description("Rating notu"),
-         Category("RatingNoteName")]
+         Category("RatingNoteText")]
         public string CurrentNoteName
         {
             get { return _currentNoteName; }
@@ -494,6 +504,36 @@ namespace TestProject
             path.Dispose();
         }
 
+        private void DrawNoteNameOrValue(Graphics gr, RatingNote note, RectangleF rect)
+        {
+            if ((_showNoteName || _showNoteValue) == false)
+            {
+                return;
+            }
+
+            string noteNameValueStr = string.Empty;
+
+            if (_showNoteValue)
+            {
+                noteNameValueStr = (_showNoteName ? "   (" : string.Empty)
+                                   + note.FromValue.ToString()
+                                   + " - "
+                                   + note.ToValue.ToString()
+                                   + (_showNoteName ? ")" : string.Empty);
+            }
+
+            if (_showNoteName)
+            {
+                noteNameValueStr = note.Name + noteNameValueStr;
+            }
+
+            StringFormat sf = new StringFormat();
+            sf.LineAlignment = StringAlignment.Center;
+            sf.Alignment = _noteTextAlignment;
+
+            gr.DrawString(noteNameValueStr, Font, new SolidBrush(ForeColor), rect, sf);
+        }
+
         private void DrawBackGround(Graphics gr)
         {
             if (BackgroundImage != null)
@@ -511,30 +551,10 @@ namespace TestProject
             DrawFrame(gr, ref clRect);
             DrawRowLines(gr, ref clRect);
 
-            StringFormat sf = null;
-            SolidBrush foreColorBrush = null;
-            if (_showNoteName)
-            {
-                sf = new StringFormat();
-                sf.LineAlignment = StringAlignment.Center;
-                sf.Alignment = _noteNameAlignment;
-
-                foreColorBrush = new SolidBrush(ForeColor);
-            }
-
             bool foundCurrentNote = false;
             int currentNoteIdx = -1;
-            short tmpNoteBarWidth;
+            short tmpNoteBarWidth = (_noteBarWidthAccordingToRowHeight ? (short)(_rowHeight - 2) : _noteBarWidth);
 
-            if (_noteBarWidthAccordingToRowHeight)
-            {
-                tmpNoteBarWidth = (short)(_rowHeight - 2);
-            }
-            else
-            {
-                tmpNoteBarWidth = _noteBarWidth;
-            }
-            
             for (int i = 0; i < _ratings.Count; ++i)
             {
                 RectangleF rect = new RectangleF
@@ -545,10 +565,7 @@ namespace TestProject
                     _rowHeight
                 );
 
-                if (_showNoteName)
-                {
-                    gr.DrawString(_ratings[i].Name, Font, foreColorBrush, rect, sf);
-                }
+                DrawNoteNameOrValue(gr, _ratings[i], rect);
 
                 rect.X = rect.Right;
                 rect.Width = tmpNoteBarWidth;
