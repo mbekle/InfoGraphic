@@ -14,11 +14,18 @@ namespace TestProject
         private const short DefaultRightIndent = 3;
         private const short DefaultNoteBarWidth = 25;
 
-        public struct RatingNote // ==> shortly note
+        public class RatingNote // ==> shortly note
         {
             public string Name;
             public float FromValue;
             public float ToValue;
+
+            public bool Equals(string noteName, float noteValue)
+            {
+                return (noteName != string.Empty && Name == noteName)
+                       ||
+                       (noteValue != 0.0 && noteValue >= FromValue && noteValue <= ToValue);
+            }
         }
 
         #region Brush Info
@@ -85,10 +92,7 @@ namespace TestProject
 
             protected void OnChanged(string propertyName)
             {
-                if(PropertyChanged != null)
-                {
-                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
-                }
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
 
             public Brush GetBrush(Rectangle rect)
@@ -141,12 +145,11 @@ namespace TestProject
         private bool _noteBarWidthAccordingToRowHeight = false;
         private string _cutOffNoteName = string.Empty;
         private float _cutOffNoteValue = 0.0f;
-        private BrushInfo _cutOffNoteBarBrush = new BrushInfo(Color.Black, Color.Empty, LinearGradientMode.Horizontal, 0);
-        private Color _cutOffNoteBarFrameColor = Color.Empty;
+        private Color _cutOffPointerColor = Color.Red;
         private string _calculatedNoteName = string.Empty;
         private float _calculatedNoteValue = 0.0f;
         private Color _calculatedNoteColor = Color.White;
-        
+
         // to do:
         // bar shape roundrectangle
 
@@ -154,7 +157,22 @@ namespace TestProject
         [Browsable(false)]
         public new Color BackColor
         {
-            get; set;
+            get;
+        }
+
+        public new Rectangle ClientRectangle
+        {
+            get
+            {
+                if (_frameColor == Color.Empty)
+                {
+                    return base.ClientRectangle;
+                }
+
+                Rectangle clientRect = base.ClientRectangle;
+                clientRect.Inflate(-1, -1);
+                return clientRect;
+            }
         }
 
         [Browsable(false)]
@@ -376,30 +394,12 @@ namespace TestProject
             set { _cutOffNoteValue = value; Invalidate(); }
         }
 
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content),
-         Description("Rating notu barının cut off değeri boyama stili ve renkleri"),
+        [Description("Cut off işaretçisinin rengi"),
          Category("CutOff")]
-        public BrushInfo CutOffNoteBarBrush
+        public Color CutOffPointerColor
         {
-            get { return _cutOffNoteBarBrush; }
-            set
-            {
-                if (value == null)
-                {
-                    return;
-                }
-
-                _cutOffNoteBarBrush = value;
-                Invalidate();
-            }
-        }
-
-        [Description("Rating notu barının frame rengi"),
-         Category("CutOff")]
-        public Color CutOffNoteBarFrameColor
-        {
-            get { return _cutOffNoteBarFrameColor; }
-            set { _cutOffNoteBarFrameColor = value; Invalidate(); }
+            get { return _cutOffPointerColor; }
+            set { _cutOffPointerColor = value; Invalidate(); }
         }
 
         [Description("Rating notunun kullanıcı tarafından ezilmeden önceki halinin ismini belirtir"),
@@ -440,7 +440,6 @@ namespace TestProject
             _rowLineBrush.PropertyChanged += PropertyChanged;
             _inactiveNoteBarBrush.PropertyChanged += PropertyChanged;
             _activeNoteBarBrush.PropertyChanged += PropertyChanged;
-            _cutOffNoteBarBrush.PropertyChanged += PropertyChanged;
             Font = new Font("Tahoma", 8f);
         }
 
@@ -496,22 +495,7 @@ namespace TestProject
             ArrangeRowHeight();
         }
 
-        private void DrawFrame(Graphics gr, ref Rectangle clientRect)
-        {
-            if (_frameColor == Color.Empty)
-            {
-                return;
-            }
-
-            clientRect.Width -= 1;
-            clientRect.Height -= 1;
-            gr.DrawRectangle(new Pen(_frameColor), clientRect);
-            clientRect.Width += 1;
-            clientRect.Height += 1;
-            clientRect.Inflate(-1, -1);
-        }
-
-        private void DrawRowLines(Graphics gr, ref Rectangle clientRect)
+        private void DrawRowLines(Graphics gr, Rectangle clientRect)
         {
             if (_rowLineWidth <= 0)
             {
@@ -541,8 +525,10 @@ namespace TestProject
             }
         }
 
-        private void DrawNoteBar(Graphics gr, BrushInfo brushInfo, Color frameColor, ref RectangleF rect)
+        private void DrawNoteBar(Graphics gr, BrushInfo brushInfo, Color frameColor, RectangleF rect)
         {
+            rect.Inflate(-1, -1);
+
             if (frameColor != Color.Empty)
             {
                 SolidBrush frameBrush = new SolidBrush(frameColor);
@@ -553,16 +539,10 @@ namespace TestProject
             DrawShape(gr, brushInfo.GetBrush(Rectangle.Round(rect)), rect);
         }
 
-        public void ConfigureGraphics(Graphics gr)
-        {
-            gr.SmoothingMode = SmoothingMode.AntiAlias;
-            gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
-            gr.InterpolationMode = InterpolationMode.High;
-            //gr.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-        }
-
         private void DrawHerePointer(Graphics gr, RectangleF rect)
         {
+            rect.Inflate(-2, -2);
+
             float span = rect.Height / 3;
             float startX = rect.X - 2 * span - 5;
             float startY = rect.Y + span;
@@ -616,11 +596,56 @@ namespace TestProject
             gr.DrawString(noteNameValueStr, Font, new SolidBrush(ForeColor), rect, sf);
         }
 
-        private bool IsRatingNote(string searchName, float searchValue, RatingNote note)
+        private void DrawCalculatedNotePointer(Graphics gr, RectangleF rect)
         {
-            return (searchName != string.Empty && note.Name == searchName)
-                   ||
-                   (searchValue != 0.0 && searchValue >= note.FromValue && searchValue <= note.ToValue);
+            float radius = 6;
+            RectangleF calculatedNoteRect = new RectangleF(rect.Left + rect.Width / 2 - radius / 2, rect.Top + rect.Height / 2 - radius / 2, radius, radius);
+            gr.FillEllipse(new SolidBrush(_calculatedNoteColor), calculatedNoteRect);
+        }
+
+        public void ConfigureGraphics(Graphics gr)
+        {
+            gr.SmoothingMode = SmoothingMode.AntiAlias;
+            gr.PixelOffsetMode = PixelOffsetMode.HighQuality;
+            gr.InterpolationMode = InterpolationMode.High;
+            //gr.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+        }
+
+        private void DrawCutOff(Graphics gr, int cutOffIndex)
+        {
+            Rectangle clRect = ClientRectangle;
+            SolidBrush cutOffbrush = new SolidBrush(_cutOffPointerColor);
+
+            RectangleF cutOffRect = new RectangleF(clRect.Left, clRect.Top + cutOffIndex * (_rowHeight + _rowLineWidth) - _rowLineWidth, clRect.Width, _rowLineWidth);
+            gr.FillRectangle(cutOffbrush, cutOffRect);
+
+            cutOffRect.Y += _rowLineWidth;
+            cutOffRect.Height = clRect.Bottom - cutOffRect.Top;
+            gr.FillRectangle(new SolidBrush(Color.FromArgb(200, Color.LightGray)), cutOffRect);
+
+            cutOffRect.Height = _rowHeight;
+
+            StringFormat sf = new StringFormat();
+            sf.LineAlignment = StringAlignment.Near;
+            sf.Alignment = StringAlignment.Center;
+            gr.DrawString("Cut Off", new Font("Tahoma", 12f, GraphicsUnit.Pixel), cutOffbrush, cutOffRect, sf);
+        }
+
+        private void DrawFrame(Graphics gr)
+        {
+            if (_frameColor == Color.Empty)
+            {
+                return;
+            }
+
+            Rectangle clientRect = base.ClientRectangle;
+            using (SolidBrush brush = new SolidBrush(_frameColor))
+            {
+                gr.FillRectangle(brush, clientRect.Left, clientRect.Top, clientRect.Width, 1);
+                gr.FillRectangle(brush, clientRect.Right - 1, clientRect.Top, 1, clientRect.Height);
+                gr.FillRectangle(brush, clientRect.Left, clientRect.Bottom - 1, clientRect.Width, 1);
+                gr.FillRectangle(brush, clientRect.Left, clientRect.Top, 1, clientRect.Height);
+            }
         }
 
         private void DrawBackGround(Graphics gr)
@@ -636,18 +661,30 @@ namespace TestProject
         private void DrawForeGround(Graphics gr)
         {
             Rectangle clRect = ClientRectangle;
+            DrawRowLines(gr, clRect);
 
-            DrawFrame(gr, ref clRect);
-            DrawRowLines(gr, ref clRect);
-
-            bool foundCurrentNote = false;
             int currentNoteIdx = -1;
-            bool foundCutOff = false;
             int cutOffNoteIdx = -1;
+            int calculatedNoteIdx = -1;
             short tmpNoteBarWidth = (_noteBarWidthAccordingToRowHeight ? (short)(_rowHeight - 2) : _noteBarWidth);
 
             for (int i = 0; i < _ratings.Count; ++i)
             {
+                if (cutOffNoteIdx == -1 && _ratings[i].Equals(_cutOffNoteName, _cutOffNoteValue))
+                {
+                    cutOffNoteIdx = i;
+                }
+
+                if (currentNoteIdx == -1 && _ratings[i].Equals(_currentNoteName, _currentNoteValue))
+                {
+                    currentNoteIdx = i;
+                }
+
+                if (calculatedNoteIdx == -1 && _ratings[i].Equals(_calculatedNoteName, _calculatedNoteValue))
+                {
+                    calculatedNoteIdx = i;
+                }
+
                 RectangleF rect = new RectangleF
                 (
                     clRect.Left + _leftIndent,
@@ -660,31 +697,14 @@ namespace TestProject
 
                 rect.X = rect.Right;
                 rect.Width = tmpNoteBarWidth;
-                rect.Inflate(-1, -1);
 
-                if (foundCutOff == false && IsRatingNote(_cutOffNoteName, _cutOffNoteValue, _ratings[i]))
+                if (currentNoteIdx == -1)
                 {
-                    foundCutOff = true;
-                    cutOffNoteIdx = i;
-                }
-
-                if (foundCurrentNote == false && IsRatingNote(_currentNoteName, _currentNoteValue, _ratings[i]))
-                {
-                    foundCurrentNote = true;
-                    currentNoteIdx = i;
-                }
-
-                if (foundCutOff)
-                {
-                    DrawNoteBar(gr, _cutOffNoteBarBrush, _cutOffNoteBarFrameColor, ref rect);
-                }
-                else if (foundCurrentNote)
-                {
-                    DrawNoteBar(gr, _activeNoteBarBrush, _activeNoteBarFrameColor, ref rect);
+                    DrawNoteBar(gr, _inactiveNoteBarBrush, _inactiveNoteBarFrameColor, rect);
                 }
                 else
                 {
-                    DrawNoteBar(gr, _inactiveNoteBarBrush, _inactiveNoteBarFrameColor, ref rect);
+                    DrawNoteBar(gr, _activeNoteBarBrush, _activeNoteBarFrameColor, rect);
                 }
 
                 if (_showHerePointer && i == currentNoteIdx)
@@ -692,12 +712,15 @@ namespace TestProject
                     DrawHerePointer(gr, rect);
                 }
 
-                if (IsRatingNote(_calculatedNoteName, _calculatedNoteValue, _ratings[i]))
+                if (i == calculatedNoteIdx)
                 {
-                    float radius = 6;
-                    RectangleF calculatedNoteRect = new RectangleF(rect.Left + rect.Width / 2 - radius / 2, rect.Top + rect.Height / 2 - radius / 2, radius, radius);
-                    gr.FillEllipse(new SolidBrush(_calculatedNoteColor), calculatedNoteRect);
+                    DrawCalculatedNotePointer(gr, rect);
                 }
+            }
+
+            if (cutOffNoteIdx != -1)
+            {
+                DrawCutOff(gr, cutOffNoteIdx);
             }
         }
 
@@ -718,6 +741,7 @@ namespace TestProject
             ConfigureGraphics(e.Graphics);
             DrawBackGround(e.Graphics);
             DrawForeGround(e.Graphics);
+            DrawFrame(e.Graphics);
         }
     }
 }

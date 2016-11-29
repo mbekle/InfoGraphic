@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 
 namespace TestProject
@@ -173,6 +174,26 @@ namespace TestProject
             for (i = 0; i < charRegions.Length; i++)
                 g.FillRegion(redBrush, charRegions[i]);
 
+        }
+
+        private void panel3_Paint(object sender, PaintEventArgs e)
+        {
+            //Graphics g = e.Graphics;
+
+            //g.Clear(Color.Blue);
+
+            //g.FillRectangle(Brushes.Green, 20, 20, 50, 50);
+            //g.CompositingMode = CompositingMode.SourceCopy;
+            //g.FillRectangle(Brushes.Transparent, 20, 20, 50, 50);
+
+            Bitmap myBitmap = new Bitmap(50, 50);
+            e.Graphics.FillRectangle(Brushes.Black, 0, 0, 50, 50);
+            Graphics g = Graphics.FromImage(myBitmap);
+            g.FillEllipse(new SolidBrush(Color.FromArgb(150, 125, 125, 125)), 25, 0, 25, 25);
+            g.DrawLine(new Pen(Color.FromArgb(150, 25, 25, 25)), 0, 0, 50, 50);
+            g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+            e.Graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+            e.Graphics.DrawImage(myBitmap, 0, 0);
         }
     }
 }

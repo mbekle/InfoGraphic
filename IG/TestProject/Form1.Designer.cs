@@ -39,11 +39,12 @@
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.button4 = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.button5 = new System.Windows.Forms.Button();
             this.igRating4 = new TestProject.IGRating();
             this.igRating3 = new TestProject.IGRating();
             this.igRating2 = new TestProject.IGRating();
             this.igRating1 = new TestProject.IGRating();
-            this.button5 = new System.Windows.Forms.Button();
             this.igProcess2 = new TestProject.IGProcess();
             this.igProcess1 = new TestProject.IGProcess();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
@@ -52,10 +53,9 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(105, 13);
-            this.button1.Margin = new System.Windows.Forms.Padding(2);
+            this.button1.Location = new System.Drawing.Point(158, 20);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(65, 26);
+            this.button1.Size = new System.Drawing.Size(98, 40);
             this.button1.TabIndex = 4;
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
@@ -73,10 +73,9 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(173, 13);
-            this.button2.Margin = new System.Windows.Forms.Padding(2);
+            this.button2.Location = new System.Drawing.Point(260, 20);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(65, 26);
+            this.button2.Size = new System.Drawing.Size(98, 40);
             this.button2.TabIndex = 4;
             this.button2.Text = "button2";
             this.button2.UseVisualStyleBackColor = true;
@@ -84,10 +83,9 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(242, 13);
-            this.button3.Margin = new System.Windows.Forms.Padding(2);
+            this.button3.Location = new System.Drawing.Point(363, 20);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(69, 26);
+            this.button3.Size = new System.Drawing.Size(104, 40);
             this.button3.TabIndex = 6;
             this.button3.Text = "button3";
             this.button3.UseVisualStyleBackColor = true;
@@ -95,40 +93,36 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(512, 48);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(2);
+            this.textBox1.Location = new System.Drawing.Point(768, 74);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(68, 20);
+            this.textBox1.Size = new System.Drawing.Size(100, 26);
             this.textBox1.TabIndex = 8;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // panel1
             // 
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 96);
-            this.panel1.Margin = new System.Windows.Forms.Padding(2);
+            this.panel1.Location = new System.Drawing.Point(0, 148);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(925, 25);
+            this.panel1.Size = new System.Drawing.Size(1388, 38);
             this.panel1.TabIndex = 9;
             // 
             // trackBar1
             // 
             this.trackBar1.LargeChange = 20;
-            this.trackBar1.Location = new System.Drawing.Point(105, 78);
-            this.trackBar1.Margin = new System.Windows.Forms.Padding(2);
+            this.trackBar1.Location = new System.Drawing.Point(158, 120);
             this.trackBar1.Maximum = 360;
             this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(474, 45);
+            this.trackBar1.Size = new System.Drawing.Size(711, 69);
             this.trackBar1.SmallChange = 5;
             this.trackBar1.TabIndex = 11;
             this.trackBar1.ValueChanged += new System.EventHandler(this.trackBar1_ValueChanged);
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(315, 13);
-            this.button4.Margin = new System.Windows.Forms.Padding(2);
+            this.button4.Location = new System.Drawing.Point(472, 20);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(57, 26);
+            this.button4.Size = new System.Drawing.Size(86, 40);
             this.button4.TabIndex = 12;
             this.button4.Text = "button4";
             this.button4.UseVisualStyleBackColor = true;
@@ -137,6 +131,7 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.SystemColors.Control;
+            this.panel2.Controls.Add(this.panel3);
             this.panel2.Controls.Add(this.igRating4);
             this.panel2.Controls.Add(this.igRating3);
             this.panel2.Controls.Add(this.igRating2);
@@ -149,11 +144,28 @@
             this.panel2.Controls.Add(this.button3);
             this.panel2.Controls.Add(this.textBox1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(105, 121);
-            this.panel2.Margin = new System.Windows.Forms.Padding(2);
+            this.panel2.Location = new System.Drawing.Point(158, 186);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(820, 447);
+            this.panel2.Size = new System.Drawing.Size(1230, 688);
             this.panel2.TabIndex = 13;
+            // 
+            // panel3
+            // 
+            this.panel3.Location = new System.Drawing.Point(722, 410);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(180, 178);
+            this.panel3.TabIndex = 18;
+            this.panel3.Paint += new System.Windows.Forms.PaintEventHandler(this.panel3_Paint);
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(768, 278);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(100, 65);
+            this.button5.TabIndex = 14;
+            this.button5.Text = "button5";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // igRating4
             // 
@@ -171,15 +183,11 @@
             this.igRating4.CalculatedNoteValue = 0F;
             this.igRating4.CurrentNoteName = "B+";
             this.igRating4.CurrentNoteValue = 0F;
-            this.igRating4.CutOffNoteBarBrush.Angle = 0F;
-            this.igRating4.CutOffNoteBarBrush.FromColor = System.Drawing.Color.Black;
-            this.igRating4.CutOffNoteBarBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
-            this.igRating4.CutOffNoteBarBrush.ToColor = System.Drawing.Color.Empty;
-            this.igRating4.CutOffNoteBarFrameColor = System.Drawing.Color.Empty;
             this.igRating4.CutOffNoteName = "CCC";
             this.igRating4.CutOffNoteValue = 0F;
+            this.igRating4.CutOffPointerColor = System.Drawing.Color.Red;
             this.igRating4.Font = new System.Drawing.Font("Tahoma", 8F);
-            this.igRating4.FrameColor = System.Drawing.Color.DarkGray;
+            this.igRating4.FrameColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.igRating4.HerePointerColor = System.Drawing.Color.Green;
             this.igRating4.InactiveNoteBarBrush.Angle = 0F;
             this.igRating4.InactiveNoteBarBrush.FromColor = System.Drawing.Color.Gainsboro;
@@ -187,8 +195,7 @@
             this.igRating4.InactiveNoteBarBrush.ToColor = System.Drawing.Color.Empty;
             this.igRating4.InactiveNoteBarFrameColor = System.Drawing.Color.Empty;
             this.igRating4.LeftIndent = ((short)(3));
-            this.igRating4.Location = new System.Drawing.Point(620, 21);
-            this.igRating4.Margin = new System.Windows.Forms.Padding(2);
+            this.igRating4.Location = new System.Drawing.Point(930, 31);
             this.igRating4.Name = "igRating4";
             this.igRating4.NoteBarShape = TestProject.IGRating.NoteBarShapeType.Rectangle;
             this.igRating4.NoteBarWidth = ((short)(25));
@@ -196,14 +203,14 @@
             this.igRating4.NoteTextAlignment = System.Drawing.StringAlignment.Near;
             this.igRating4.RightIndent = ((short)(3));
             this.igRating4.RowLineBrush.Angle = 0F;
-            this.igRating4.RowLineBrush.FromColor = System.Drawing.Color.DarkGray;
+            this.igRating4.RowLineBrush.FromColor = System.Drawing.Color.DimGray;
             this.igRating4.RowLineBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
-            this.igRating4.RowLineBrush.ToColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.igRating4.RowLineBrush.ToColor = System.Drawing.Color.White;
             this.igRating4.RowLineWidth = ((short)(1));
             this.igRating4.ShowHerePointer = true;
             this.igRating4.ShowNoteName = true;
             this.igRating4.ShowNoteValue = false;
-            this.igRating4.Size = new System.Drawing.Size(151, 415);
+            this.igRating4.Size = new System.Drawing.Size(226, 642);
             this.igRating4.TabIndex = 17;
             this.igRating4.Text = "ıgRating1";
             // 
@@ -223,15 +230,11 @@
             this.igRating3.CalculatedNoteValue = 0F;
             this.igRating3.CurrentNoteName = "B-";
             this.igRating3.CurrentNoteValue = 0F;
-            this.igRating3.CutOffNoteBarBrush.Angle = 0F;
-            this.igRating3.CutOffNoteBarBrush.FromColor = System.Drawing.Color.Black;
-            this.igRating3.CutOffNoteBarBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
-            this.igRating3.CutOffNoteBarBrush.ToColor = System.Drawing.Color.Empty;
-            this.igRating3.CutOffNoteBarFrameColor = System.Drawing.Color.Empty;
             this.igRating3.CutOffNoteName = "";
             this.igRating3.CutOffNoteValue = 0F;
+            this.igRating3.CutOffPointerColor = System.Drawing.Color.Empty;
             this.igRating3.Font = new System.Drawing.Font("Tahoma", 8F);
-            this.igRating3.FrameColor = System.Drawing.Color.DarkGray;
+            this.igRating3.FrameColor = System.Drawing.Color.DimGray;
             this.igRating3.HerePointerColor = System.Drawing.Color.Green;
             this.igRating3.InactiveNoteBarBrush.Angle = 0F;
             this.igRating3.InactiveNoteBarBrush.FromColor = System.Drawing.Color.Gainsboro;
@@ -239,8 +242,7 @@
             this.igRating3.InactiveNoteBarBrush.ToColor = System.Drawing.Color.Empty;
             this.igRating3.InactiveNoteBarFrameColor = System.Drawing.Color.White;
             this.igRating3.LeftIndent = ((short)(3));
-            this.igRating3.Location = new System.Drawing.Point(315, 137);
-            this.igRating3.Margin = new System.Windows.Forms.Padding(2);
+            this.igRating3.Location = new System.Drawing.Point(472, 211);
             this.igRating3.Name = "igRating3";
             this.igRating3.NoteBarShape = TestProject.IGRating.NoteBarShapeType.Rectangle;
             this.igRating3.NoteBarWidth = ((short)(25));
@@ -255,7 +257,7 @@
             this.igRating3.ShowHerePointer = true;
             this.igRating3.ShowNoteName = true;
             this.igRating3.ShowNoteValue = false;
-            this.igRating3.Size = new System.Drawing.Size(123, 272);
+            this.igRating3.Size = new System.Drawing.Size(187, 418);
             this.igRating3.TabIndex = 16;
             this.igRating3.Text = "ıgRating3";
             // 
@@ -275,13 +277,9 @@
             this.igRating2.CalculatedNoteValue = 0F;
             this.igRating2.CurrentNoteName = "B2";
             this.igRating2.CurrentNoteValue = 0F;
-            this.igRating2.CutOffNoteBarBrush.Angle = 0F;
-            this.igRating2.CutOffNoteBarBrush.FromColor = System.Drawing.Color.Black;
-            this.igRating2.CutOffNoteBarBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
-            this.igRating2.CutOffNoteBarBrush.ToColor = System.Drawing.Color.Empty;
-            this.igRating2.CutOffNoteBarFrameColor = System.Drawing.Color.Empty;
             this.igRating2.CutOffNoteName = "";
             this.igRating2.CutOffNoteValue = 0F;
+            this.igRating2.CutOffPointerColor = System.Drawing.Color.Empty;
             this.igRating2.Font = new System.Drawing.Font("Tahoma", 7F);
             this.igRating2.FrameColor = System.Drawing.Color.Empty;
             this.igRating2.HerePointerColor = System.Drawing.Color.Green;
@@ -291,8 +289,7 @@
             this.igRating2.InactiveNoteBarBrush.ToColor = System.Drawing.Color.Empty;
             this.igRating2.InactiveNoteBarFrameColor = System.Drawing.Color.Empty;
             this.igRating2.LeftIndent = ((short)(3));
-            this.igRating2.Location = new System.Drawing.Point(71, 137);
-            this.igRating2.Margin = new System.Windows.Forms.Padding(2);
+            this.igRating2.Location = new System.Drawing.Point(106, 211);
             this.igRating2.Name = "igRating2";
             this.igRating2.NoteBarShape = TestProject.IGRating.NoteBarShapeType.Rectangle;
             this.igRating2.NoteBarWidth = ((short)(25));
@@ -307,7 +304,7 @@
             this.igRating2.ShowHerePointer = true;
             this.igRating2.ShowNoteName = true;
             this.igRating2.ShowNoteValue = false;
-            this.igRating2.Size = new System.Drawing.Size(118, 272);
+            this.igRating2.Size = new System.Drawing.Size(177, 418);
             this.igRating2.TabIndex = 15;
             this.igRating2.Text = "ıgRating1";
             // 
@@ -327,13 +324,9 @@
             this.igRating1.CalculatedNoteValue = 0F;
             this.igRating1.CurrentNoteName = "BB-";
             this.igRating1.CurrentNoteValue = 0F;
-            this.igRating1.CutOffNoteBarBrush.Angle = 0F;
-            this.igRating1.CutOffNoteBarBrush.FromColor = System.Drawing.Color.Black;
-            this.igRating1.CutOffNoteBarBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
-            this.igRating1.CutOffNoteBarBrush.ToColor = System.Drawing.Color.Empty;
-            this.igRating1.CutOffNoteBarFrameColor = System.Drawing.Color.Empty;
             this.igRating1.CutOffNoteName = "";
             this.igRating1.CutOffNoteValue = 0F;
+            this.igRating1.CutOffPointerColor = System.Drawing.Color.Empty;
             this.igRating1.Font = new System.Drawing.Font("Tahoma", 7F);
             this.igRating1.FrameColor = System.Drawing.Color.Empty;
             this.igRating1.HerePointerColor = System.Drawing.Color.Green;
@@ -343,8 +336,7 @@
             this.igRating1.InactiveNoteBarBrush.ToColor = System.Drawing.Color.Empty;
             this.igRating1.InactiveNoteBarFrameColor = System.Drawing.Color.Empty;
             this.igRating1.LeftIndent = ((short)(3));
-            this.igRating1.Location = new System.Drawing.Point(188, 137);
-            this.igRating1.Margin = new System.Windows.Forms.Padding(2);
+            this.igRating1.Location = new System.Drawing.Point(282, 211);
             this.igRating1.Name = "igRating1";
             this.igRating1.NoteBarShape = TestProject.IGRating.NoteBarShapeType.Rectangle;
             this.igRating1.NoteBarWidth = ((short)(25));
@@ -359,20 +351,9 @@
             this.igRating1.ShowHerePointer = true;
             this.igRating1.ShowNoteName = false;
             this.igRating1.ShowNoteValue = false;
-            this.igRating1.Size = new System.Drawing.Size(50, 272);
+            this.igRating1.Size = new System.Drawing.Size(75, 418);
             this.igRating1.TabIndex = 15;
             this.igRating1.Text = "ıgRating1";
-            // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(512, 181);
-            this.button5.Margin = new System.Windows.Forms.Padding(2);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(67, 42);
-            this.button5.TabIndex = 14;
-            this.button5.Text = "button5";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // igProcess2
             // 
@@ -388,11 +369,10 @@
             this.igProcess2.ItemSeperatorWidth = ((short)(-7));
             this.igProcess2.ItemTextLeftRightEmptyWidth = ((short)(40));
             this.igProcess2.ItemTriangleWidth = ((short)(10));
-            this.igProcess2.Location = new System.Drawing.Point(0, 121);
-            this.igProcess2.Margin = new System.Windows.Forms.Padding(2);
+            this.igProcess2.Location = new System.Drawing.Point(0, 186);
             this.igProcess2.Name = "igProcess2";
             this.igProcess2.Shrinker = true;
-            this.igProcess2.Size = new System.Drawing.Size(105, 447);
+            this.igProcess2.Size = new System.Drawing.Size(158, 688);
             this.igProcess2.TabIndex = 10;
             // 
             // igProcess1
@@ -410,22 +390,20 @@
             this.igProcess1.ItemTextLeftRightEmptyWidth = ((short)(50));
             this.igProcess1.ItemTriangleWidth = ((short)(20));
             this.igProcess1.Location = new System.Drawing.Point(0, 0);
-            this.igProcess1.Margin = new System.Windows.Forms.Padding(2);
             this.igProcess1.Name = "igProcess1";
             this.igProcess1.Shrinker = true;
-            this.igProcess1.Size = new System.Drawing.Size(925, 96);
+            this.igProcess1.Size = new System.Drawing.Size(1388, 148);
             this.igProcess1.TabIndex = 5;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(925, 568);
+            this.ClientSize = new System.Drawing.Size(1388, 874);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.igProcess2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.igProcess1);
-            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
@@ -453,5 +431,6 @@
         private IGRating igRating2;
         private IGRating igRating3;
         private IGRating igRating4;
+        private System.Windows.Forms.Panel panel3;
     }
 }
