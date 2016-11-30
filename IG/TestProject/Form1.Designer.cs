@@ -186,6 +186,8 @@
             this.igRating4.CutOffNoteName = "CCC";
             this.igRating4.CutOffNoteValue = 0F;
             this.igRating4.CutOffPointerColor = System.Drawing.Color.Red;
+            this.igRating4.CutOffTranslucentColor = System.Drawing.Color.LightGray;
+            this.igRating4.CutOffTranslucentValue = ((byte)(125));
             this.igRating4.Font = new System.Drawing.Font("Tahoma", 8F);
             this.igRating4.FrameColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
             this.igRating4.HerePointerColor = System.Drawing.Color.Green;
@@ -207,6 +209,7 @@
             this.igRating4.RowLineBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
             this.igRating4.RowLineBrush.ToColor = System.Drawing.Color.White;
             this.igRating4.RowLineWidth = ((short)(1));
+            this.igRating4.ShowCutOffText = true;
             this.igRating4.ShowHerePointer = true;
             this.igRating4.ShowNoteName = true;
             this.igRating4.ShowNoteValue = false;
@@ -233,6 +236,8 @@
             this.igRating3.CutOffNoteName = "";
             this.igRating3.CutOffNoteValue = 0F;
             this.igRating3.CutOffPointerColor = System.Drawing.Color.Empty;
+            this.igRating3.CutOffTranslucentColor = System.Drawing.Color.LightGray;
+            this.igRating3.CutOffTranslucentValue = ((byte)(125));
             this.igRating3.Font = new System.Drawing.Font("Tahoma", 8F);
             this.igRating3.FrameColor = System.Drawing.Color.DimGray;
             this.igRating3.HerePointerColor = System.Drawing.Color.Green;
@@ -254,6 +259,7 @@
             this.igRating3.RowLineBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
             this.igRating3.RowLineBrush.ToColor = System.Drawing.Color.Empty;
             this.igRating3.RowLineWidth = ((short)(1));
+            this.igRating3.ShowCutOffText = true;
             this.igRating3.ShowHerePointer = true;
             this.igRating3.ShowNoteName = true;
             this.igRating3.ShowNoteValue = false;
@@ -280,6 +286,8 @@
             this.igRating2.CutOffNoteName = "";
             this.igRating2.CutOffNoteValue = 0F;
             this.igRating2.CutOffPointerColor = System.Drawing.Color.Empty;
+            this.igRating2.CutOffTranslucentColor = System.Drawing.Color.LightGray;
+            this.igRating2.CutOffTranslucentValue = ((byte)(125));
             this.igRating2.Font = new System.Drawing.Font("Tahoma", 7F);
             this.igRating2.FrameColor = System.Drawing.Color.Empty;
             this.igRating2.HerePointerColor = System.Drawing.Color.Green;
@@ -301,6 +309,7 @@
             this.igRating2.RowLineBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.ForwardDiagonal;
             this.igRating2.RowLineBrush.ToColor = System.Drawing.Color.Empty;
             this.igRating2.RowLineWidth = ((short)(1));
+            this.igRating2.ShowCutOffText = true;
             this.igRating2.ShowHerePointer = true;
             this.igRating2.ShowNoteName = true;
             this.igRating2.ShowNoteValue = false;
@@ -327,6 +336,8 @@
             this.igRating1.CutOffNoteName = "";
             this.igRating1.CutOffNoteValue = 0F;
             this.igRating1.CutOffPointerColor = System.Drawing.Color.Empty;
+            this.igRating1.CutOffTranslucentColor = System.Drawing.Color.LightGray;
+            this.igRating1.CutOffTranslucentValue = ((byte)(125));
             this.igRating1.Font = new System.Drawing.Font("Tahoma", 7F);
             this.igRating1.FrameColor = System.Drawing.Color.Empty;
             this.igRating1.HerePointerColor = System.Drawing.Color.Green;
@@ -348,6 +359,7 @@
             this.igRating1.RowLineBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.ForwardDiagonal;
             this.igRating1.RowLineBrush.ToColor = System.Drawing.Color.Empty;
             this.igRating1.RowLineWidth = ((short)(1));
+            this.igRating1.ShowCutOffText = true;
             this.igRating1.ShowHerePointer = true;
             this.igRating1.ShowNoteName = false;
             this.igRating1.ShowNoteValue = false;

@@ -13,6 +13,7 @@ namespace TestProject
         private const short DefaultLeftIndent = 3;
         private const short DefaultRightIndent = 3;
         private const short DefaultNoteBarWidth = 25;
+        private const byte DefaultCutOffTranslucentValue = 125;
 
         public class RatingNote // ==> shortly note
         {
@@ -146,6 +147,9 @@ namespace TestProject
         private string _cutOffNoteName = string.Empty;
         private float _cutOffNoteValue = 0.0f;
         private Color _cutOffPointerColor = Color.Red;
+        private Color _cutOffTranslucentColor = Color.LightGray;
+        private byte _cutOffTranslucentValue = DefaultCutOffTranslucentValue;
+        private bool _showCutOffText = true;
         private string _calculatedNoteName = string.Empty;
         private float _calculatedNoteValue = 0.0f;
         private Color _calculatedNoteColor = Color.White;
@@ -402,6 +406,39 @@ namespace TestProject
             set { _cutOffPointerColor = value; Invalidate(); }
         }
 
+        [Description("Cut off yarı saydam rengi"),
+         Category("CutOff")]
+        public Color CutOffTranslucentColor
+        {
+            get { return _cutOffTranslucentColor; }
+            set
+            {
+                if (value == Color.Empty)
+                {
+                    return;
+                }
+
+                _cutOffTranslucentColor = value;
+                Invalidate();
+            }
+        }
+
+        [Description("Cut off yarı saydam renk değeri"),
+         Category("CutOff")]
+        public byte CutOffTranslucentValue
+        {
+            get { return _cutOffTranslucentValue; }
+            set { _cutOffTranslucentValue = value; Invalidate(); }
+        }
+        
+        [Description("Cut off yazısının gösterilip gösterilmeyeceğini belirler"),
+         Category("CutOff")]
+        public bool ShowCutOffText
+        {
+            get { return _showCutOffText; }
+            set { _showCutOffText = value; Invalidate(); }
+        }
+
         [Description("Rating notunun kullanıcı tarafından ezilmeden önceki halinin ismini belirtir"),
          Category("CalculatedNote")]
         public string CalculatedNoteName
@@ -621,14 +658,17 @@ namespace TestProject
 
             cutOffRect.Y += _rowLineWidth;
             cutOffRect.Height = clRect.Bottom - cutOffRect.Top;
-            gr.FillRectangle(new SolidBrush(Color.FromArgb(200, Color.LightGray)), cutOffRect);
+            gr.FillRectangle(new SolidBrush(Color.FromArgb(_cutOffTranslucentValue, _cutOffTranslucentColor)), cutOffRect);
 
-            cutOffRect.Height = _rowHeight;
+            if (_showCutOffText)
+            {
+                cutOffRect.Height = _rowHeight;
 
-            StringFormat sf = new StringFormat();
-            sf.LineAlignment = StringAlignment.Near;
-            sf.Alignment = StringAlignment.Center;
-            gr.DrawString("Cut Off", new Font("Tahoma", 12f, GraphicsUnit.Pixel), cutOffbrush, cutOffRect, sf);
+                StringFormat sf = new StringFormat();
+                sf.LineAlignment = StringAlignment.Near;
+                sf.Alignment = StringAlignment.Center;
+                gr.DrawString("Cut Off", new Font("Tahoma", 12f, GraphicsUnit.Pixel), cutOffbrush, cutOffRect, sf);
+            }
         }
 
         private void DrawFrame(Graphics gr)
