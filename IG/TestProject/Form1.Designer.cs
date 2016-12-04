@@ -171,9 +171,9 @@
             // 
             this.igRating4.ActiveNoteBarBrush.Angle = 0F;
             this.igRating4.ActiveNoteBarBrush.FromColor = System.Drawing.Color.DodgerBlue;
-            this.igRating4.ActiveNoteBarBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
+            this.igRating4.ActiveNoteBarBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.ForwardDiagonal;
             this.igRating4.ActiveNoteBarBrush.ToColor = System.Drawing.Color.Empty;
-            this.igRating4.ActiveNoteBarFrameColor = System.Drawing.Color.Black;
+            this.igRating4.ActiveNoteBarFrameColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(255)))));
             this.igRating4.BackGroundBrush.Angle = 0F;
             this.igRating4.BackGroundBrush.FromColor = System.Drawing.Color.White;
             this.igRating4.BackGroundBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
@@ -182,7 +182,7 @@
             this.igRating4.CalculatedNoteName = "BB2";
             this.igRating4.CalculatedNoteValue = 0F;
             this.igRating4.CurrentNoteName = "B+";
-            this.igRating4.CurrentNoteValue = 0F;
+            this.igRating4.CurrentNoteValue = 40F;
             this.igRating4.CutOffNoteName = "CCC";
             this.igRating4.CutOffNoteValue = 0F;
             this.igRating4.CutOffPointerColor = System.Drawing.Color.Red;
@@ -195,13 +195,14 @@
             this.igRating4.InactiveNoteBarBrush.FromColor = System.Drawing.Color.Gainsboro;
             this.igRating4.InactiveNoteBarBrush.GradientMode = System.Drawing.Drawing2D.LinearGradientMode.Horizontal;
             this.igRating4.InactiveNoteBarBrush.ToColor = System.Drawing.Color.Empty;
-            this.igRating4.InactiveNoteBarFrameColor = System.Drawing.Color.Empty;
+            this.igRating4.InactiveNoteBarFrameColor = System.Drawing.Color.White;
             this.igRating4.LeftIndent = ((short)(3));
             this.igRating4.Location = new System.Drawing.Point(930, 31);
             this.igRating4.Name = "igRating4";
-            this.igRating4.NoteBarShape = TestProject.IGRating.NoteBarShapeType.Rectangle;
+            this.igRating4.NoteBarShape = TestProject.IGRating.NoteBarShapeType.RoundRectangle;
+            this.igRating4.NoteBarShapeInflateValue = -1F;
             this.igRating4.NoteBarWidth = ((short)(25));
-            this.igRating4.NoteBarWidthAccordingToRowHeight = false;
+            this.igRating4.NoteBarWidthAccordingToRowHeight = true;
             this.igRating4.NoteTextAlignment = System.Drawing.StringAlignment.Near;
             this.igRating4.RightIndent = ((short)(3));
             this.igRating4.RowLineBrush.Angle = 0F;
@@ -213,7 +214,7 @@
             this.igRating4.ShowHerePointer = true;
             this.igRating4.ShowNoteName = true;
             this.igRating4.ShowNoteValue = false;
-            this.igRating4.Size = new System.Drawing.Size(226, 642);
+            this.igRating4.Size = new System.Drawing.Size(226, 626);
             this.igRating4.TabIndex = 17;
             this.igRating4.Text = "ıgRating1";
             // 
@@ -250,6 +251,7 @@
             this.igRating3.Location = new System.Drawing.Point(472, 211);
             this.igRating3.Name = "igRating3";
             this.igRating3.NoteBarShape = TestProject.IGRating.NoteBarShapeType.Rectangle;
+            this.igRating3.NoteBarShapeInflateValue = -1F;
             this.igRating3.NoteBarWidth = ((short)(25));
             this.igRating3.NoteBarWidthAccordingToRowHeight = false;
             this.igRating3.NoteTextAlignment = System.Drawing.StringAlignment.Near;
@@ -300,6 +302,7 @@
             this.igRating2.Location = new System.Drawing.Point(106, 211);
             this.igRating2.Name = "igRating2";
             this.igRating2.NoteBarShape = TestProject.IGRating.NoteBarShapeType.Rectangle;
+            this.igRating2.NoteBarShapeInflateValue = -1F;
             this.igRating2.NoteBarWidth = ((short)(25));
             this.igRating2.NoteBarWidthAccordingToRowHeight = false;
             this.igRating2.NoteTextAlignment = System.Drawing.StringAlignment.Near;
@@ -350,6 +353,7 @@
             this.igRating1.Location = new System.Drawing.Point(282, 211);
             this.igRating1.Name = "igRating1";
             this.igRating1.NoteBarShape = TestProject.IGRating.NoteBarShapeType.Rectangle;
+            this.igRating1.NoteBarShapeInflateValue = -1F;
             this.igRating1.NoteBarWidth = ((short)(25));
             this.igRating1.NoteBarWidthAccordingToRowHeight = false;
             this.igRating1.NoteTextAlignment = System.Drawing.StringAlignment.Near;
@@ -363,7 +367,7 @@
             this.igRating1.ShowHerePointer = true;
             this.igRating1.ShowNoteName = false;
             this.igRating1.ShowNoteValue = false;
-            this.igRating1.Size = new System.Drawing.Size(75, 418);
+            this.igRating1.Size = new System.Drawing.Size(113, 418);
             this.igRating1.TabIndex = 15;
             this.igRating1.Text = "ıgRating1";
             // 

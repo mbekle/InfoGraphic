@@ -14,6 +14,7 @@ namespace TestProject
         private const short DefaultRightIndent = 3;
         private const short DefaultNoteBarWidth = 25;
         private const byte DefaultCutOffTranslucentValue = 125;
+        private const float DefaultNoteBarShapeInflateValue = -1f;
 
         public class RatingNote // ==> shortly note
         {
@@ -21,11 +22,14 @@ namespace TestProject
             public float FromValue;
             public float ToValue;
 
+            public bool Equals(float noteValue)
+            {
+                return (noteValue != 0.0 && noteValue >= FromValue && noteValue <= ToValue);
+            }
+
             public bool Equals(string noteName, float noteValue)
             {
-                return (noteName != string.Empty && Name == noteName)
-                       ||
-                       (noteValue != 0.0 && noteValue >= FromValue && noteValue <= ToValue);
+                return (noteName != string.Empty && Name == noteName) || Equals(noteValue);
             }
         }
 
@@ -131,6 +135,7 @@ namespace TestProject
         private short _rightIndent = DefaultRightIndent;
         private Color _frameColor = Color.DarkGray;
         private NoteBarShapeType _noteBarShape = NoteBarShapeType.Rectangle;
+        private float _noteBarShapeInflateValue = DefaultNoteBarShapeInflateValue;
         private short _noteBarWidth = DefaultNoteBarWidth;
         private BrushInfo _inactiveNoteBarBrush = new BrushInfo(Color.Gainsboro, Color.Empty, LinearGradientMode.Horizontal, 0);
         private Color _inactiveNoteBarFrameColor = Color.Empty;
@@ -153,9 +158,6 @@ namespace TestProject
         private string _calculatedNoteName = string.Empty;
         private float _calculatedNoteValue = 0.0f;
         private Color _calculatedNoteColor = Color.White;
-
-        // to do:
-        // bar shape roundrectangle
 
         #region Published Properties
         [Browsable(false)]
@@ -235,6 +237,14 @@ namespace TestProject
         {
             get { return _noteBarShape; }
             set { _noteBarShape = value; Invalidate(); }
+        }
+
+        [Description("Grafik barın içe/dışa ne kadar daralacağı/genişleyeceği"),
+         Category("RatingNoteBar")]
+        public float NoteBarShapeInflateValue
+        {
+            get { return _noteBarShapeInflateValue; }
+            set { _noteBarShapeInflateValue = value; Invalidate(); }
         }
 
         [Description("Grafik barın genişliği"),
@@ -546,39 +556,79 @@ namespace TestProject
             }
         }
 
-        private void DrawShape(Graphics gr, Brush brush, RectangleF rect)
+        private GraphicsPath GetShapePath(RectangleF rect)
         {
+            GraphicsPath path = new GraphicsPath();
+
             switch (_noteBarShape)
             {
                 case NoteBarShapeType.Rectangle:
-                    gr.FillRectangle(brush, rect);
+                    path.AddRectangle(rect);
                     break;
                 case NoteBarShapeType.Ellipse:
-                    gr.FillEllipse(brush, rect);
+                    path.AddEllipse(rect);
                     break;
                 case NoteBarShapeType.RoundRectangle:
-                    //gr.FillEllipse(frameBrush, rect);
+                    float radius = (float)Math.Round((double)rect.Width / 3, 0);
+                    float diameter = 2 * radius;
+
+                    path.AddLine(rect.Left + radius, rect.Top, rect.Right - radius, rect.Top);
+                    path.AddArc(rect.Right - radius, rect.Top, radius, radius, -90, 90);
+                    path.AddLine(rect.Right, rect.Top + radius, rect.Right, rect.Bottom - radius);
+                    path.AddArc(rect.Right - radius, rect.Bottom - radius, radius, radius, 0, 90);
+                    path.AddLine(rect.Left + radius, rect.Bottom, rect.Right - radius, rect.Bottom);
+                    path.AddArc(rect.Left, rect.Bottom - radius, radius, radius, 90, 90);
+                    path.AddLine(rect.Left, rect.Top + radius, rect.Left, rect.Bottom - radius);
+                    path.AddArc(rect.Left, rect.Top, radius, radius, 180, 90);
+                    path.CloseFigure();
                     break;
             }
+
+            return path;
         }
 
         private void DrawNoteBar(Graphics gr, BrushInfo brushInfo, Color frameColor, RectangleF rect)
         {
-            rect.Inflate(-1, -1);
+            rect.Inflate(_noteBarShapeInflateValue, _noteBarShapeInflateValue);
 
             if (frameColor != Color.Empty)
             {
-                SolidBrush frameBrush = new SolidBrush(frameColor);
-                DrawShape(gr, frameBrush, rect);
+                using (GraphicsPath framePath = GetShapePath(rect))
+                {
+                    gr.FillPath(new SolidBrush(frameColor), framePath);
+                }
+
                 rect.Inflate(-1, -1);
             }
 
-            DrawShape(gr, brushInfo.GetBrush(Rectangle.Round(rect)), rect);
+            using (GraphicsPath path = GetShapePath(rect))
+            {
+                gr.FillPath(brushInfo.GetBrush(Rectangle.Round(rect)), path);
+            }
+        }
+
+        private void DrawClipCurrentNoteBar(Graphics gr, RectangleF rect)
+        {
+            rect.Inflate(_noteBarShapeInflateValue, _noteBarShapeInflateValue);
+            if (_activeNoteBarFrameColor != Color.Empty)
+            {
+                rect.Inflate(-1, -1);
+            }
+            //rect.Inflate(-1, -1);
+
+            using (GraphicsPath path = GetShapePath(rect))
+            {
+                gr.SetClip(path);
+                gr.FillRectangle(_activeNoteBarBrush.GetBrush(Rectangle.Round(rect)),
+                    new RectangleF(rect.Left, rect.Top + 2 * rect.Height / 3, rect.Width, rect.Bottom - (rect.Top + 2 * rect.Height / 3)));
+                gr.ResetClip();
+            }
         }
 
         private void DrawHerePointer(Graphics gr, RectangleF rect)
         {
-            rect.Inflate(-2, -2);
+            float noteBarShapeInflateValue = (_noteBarShapeInflateValue < 0 ? _noteBarShapeInflateValue : -1) - 1;
+            rect.Inflate(noteBarShapeInflateValue, noteBarShapeInflateValue);
 
             float span = rect.Height / 3;
             float startX = rect.X - 2 * span - 5;
@@ -738,7 +788,7 @@ namespace TestProject
                 rect.X = rect.Right;
                 rect.Width = tmpNoteBarWidth;
 
-                if (currentNoteIdx == -1)
+                if (currentNoteIdx == -1 || _ratings[i].Equals(_currentNoteValue))
                 {
                     DrawNoteBar(gr, _inactiveNoteBarBrush, _inactiveNoteBarFrameColor, rect);
                 }
@@ -747,9 +797,17 @@ namespace TestProject
                     DrawNoteBar(gr, _activeNoteBarBrush, _activeNoteBarFrameColor, rect);
                 }
 
-                if (_showHerePointer && i == currentNoteIdx)
+                if (i == currentNoteIdx)
                 {
-                    DrawHerePointer(gr, rect);
+                    if (_showHerePointer)
+                    {
+                        DrawHerePointer(gr, rect);
+                    }
+
+                    if (_ratings[i].Equals(_currentNoteValue))
+                    {
+                        DrawClipCurrentNoteBar(gr, rect);
+                    }
                 }
 
                 if (i == calculatedNoteIdx)
