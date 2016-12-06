@@ -199,7 +199,7 @@
             this.igRating4.LeftIndent = ((short)(3));
             this.igRating4.Location = new System.Drawing.Point(930, 31);
             this.igRating4.Name = "igRating4";
-            this.igRating4.NoteBarShape = TestProject.IGRating.NoteBarShapeType.RoundRectangle;
+            this.igRating4.NoteBarShape = TestProject.IGRating.NoteBarShapeType.Rectangle;
             this.igRating4.NoteBarShapeInflateValue = -1F;
             this.igRating4.NoteBarWidth = ((short)(25));
             this.igRating4.NoteBarWidthAccordingToRowHeight = true;

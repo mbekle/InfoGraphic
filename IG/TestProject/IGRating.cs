@@ -529,7 +529,7 @@ namespace TestProject
         {
             string[] noteName = { "CC+ to C", "CCC-", "CCC", "CCC+", "B-", "B2", "B1", "B+", "BB-", "BB2", "BB1", "BB+", "BBB-", "BBB", "BBB+", "AAA to A-" };
             float[] noteFromValue = { 0, 5, 10, 15, 20, 25, 30, 35, 55, 60, 65, 70, 75, 80, 85, 90 };
-            float[] noteToValue = { 5, 10, 15, 20, 25, 30, 35, 55, 60, 65, 70, 75, 80, 85, 90, 100 };
+            float[] noteToValue =   { 5, 10, 15, 20, 25, 30, 35, 55, 60, 65, 70, 75, 80, 85, 90, 100 };
 
             _ratings.Clear();
 
@@ -607,20 +607,35 @@ namespace TestProject
             }
         }
 
-        private void DrawClipCurrentNoteBar(Graphics gr, RectangleF rect)
+        private void DrawClippedCurrentNoteBar(Graphics gr, RectangleF rect, int currentNoteIndex)
         {
             rect.Inflate(_noteBarShapeInflateValue, _noteBarShapeInflateValue);
             if (_activeNoteBarFrameColor != Color.Empty)
             {
                 rect.Inflate(-1, -1);
             }
-            //rect.Inflate(-1, -1);
+
+            float rateHeight;
+            RatingNote note = _ratings[currentNoteIndex];
+
+            if (_currentNoteValue == note.ToValue)
+            {
+                rateHeight = rect.Height;
+            }
+            else if (_currentNoteValue == note.FromValue)
+            {
+                rateHeight = 1;
+            }
+            else
+            {
+                rateHeight = rect.Height * (_currentNoteValue - note.FromValue) / (note.ToValue - note.FromValue);
+                rateHeight = (float)Math.Round(rateHeight, 2);
+            }
 
             using (GraphicsPath path = GetShapePath(rect))
             {
                 gr.SetClip(path);
-                gr.FillRectangle(_activeNoteBarBrush.GetBrush(Rectangle.Round(rect)),
-                    new RectangleF(rect.Left, rect.Top + 2 * rect.Height / 3, rect.Width, rect.Bottom - (rect.Top + 2 * rect.Height / 3)));
+                gr.FillRectangle(_activeNoteBarBrush.GetBrush(Rectangle.Round(rect)), new RectangleF(rect.Left, rect.Bottom - rateHeight, rect.Width, rateHeight));
                 gr.ResetClip();
             }
         }
@@ -788,7 +803,7 @@ namespace TestProject
                 rect.X = rect.Right;
                 rect.Width = tmpNoteBarWidth;
 
-                if (currentNoteIdx == -1 || _ratings[i].Equals(_currentNoteValue))
+                if (currentNoteIdx == -1 || (i == currentNoteIdx && _ratings[i].Equals(_currentNoteValue)))
                 {
                     DrawNoteBar(gr, _inactiveNoteBarBrush, _inactiveNoteBarFrameColor, rect);
                 }
@@ -806,7 +821,7 @@ namespace TestProject
 
                     if (_ratings[i].Equals(_currentNoteValue))
                     {
-                        DrawClipCurrentNoteBar(gr, rect);
+                        DrawClippedCurrentNoteBar(gr, rect, currentNoteIdx);
                     }
                 }
 
